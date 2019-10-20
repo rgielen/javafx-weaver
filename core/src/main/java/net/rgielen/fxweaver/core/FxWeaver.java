@@ -134,6 +134,15 @@ public class FxWeaver {
         }
     }
 
+    /**
+     * Build a FXML view location reference for controller classes, based on {@link @FxmlView} annotation
+     * or simple classname.
+     *
+     * @param c The class to build a FXML location for. If it does not contain a {@link FxmlView} annotation
+     *          to specify resource to load, it is assumed that the view resides in the same package, named
+     *          {c.getSimpleName()}.fxml
+     * @return  a resource location suitable for loading by {@link Class#getResource(String)}
+     */
     protected String buildFxmlReference(@Nonnull Class<?> c) {
         return Optional.ofNullable(c.getAnnotation(FxmlView.class)).map(FxmlView::value)
                 .map(s -> s.isEmpty() ? null : s)
