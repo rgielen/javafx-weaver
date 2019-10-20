@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -18,24 +19,27 @@ import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
 /**
- * FxWeaver is the core weaving facility, enabling Controllers and Views to be instantiated by
- * a dependency injection framework such as (but not limited to) Spring.
+ * FxWeaver is the core weaving facility, enabling Controllers and Views to be instantiated by a dependency injection
+ * framework such as (but not limited to) Spring.
  * <p/>
- * The following example requires a Spring ConfigurableApplicationContext to be instantiated.
- * If now MainController is declared as Spring managed bean, it will get created and injected
- * by Spring.
- *
- * If a managed Controller class contains an {@link FxmlView} annotation, attached FXML views are
- * injected as well.
+ * The following example requires a Spring ConfigurableApplicationContext to be instantiated. If now MainController is
+ * declared as Spring managed bean, it will get created and injected by Spring.
+ * <p>
+ * If a managed Controller class contains an {@link FxmlView} annotation, attached FXML views are injected as well.
  *
  * <pre>
  *     ConfigurableApplicationContext applicationContext = ...
  *     FxWeaver fxWeaver = new FxWeaver(applicationContext::getBean, applicationContext::close);
  *     Scene scene = new Scene(fxWeaver.loadView(MainController.class), 400, 300);
+ *     ...
+ *     &#64;FxmlView
+ *     public class MainController {
+ *        ...
+ *     }
  * </pre>
  *
- * @see FxmlView
  * @author Rene Gielen
+ * @see FxmlView
  */
 public class FxWeaver {
 
@@ -52,10 +56,10 @@ public class FxWeaver {
      *     ConfigurableApplicationContext applicationContext = ...
      *     FxWeaver fxWeaver = new FxWeaver(applicationContext::getBean, applicationContext::close);
      * </pre>
-     * @param beanFactory The beanFactory callback to be called for requesting a bean of given class
-     *                    when e.g. {@link #loadView(Class)} is called.
-     * @param closeCommand The function to close a bean factory attached to FxWeaver
      *
+     * @param beanFactory  The beanFactory callback to be called for requesting a bean of given class when e.g. {@link
+     *                     #loadView(Class)} is called.
+     * @param closeCommand The function to close a bean factory attached to FxWeaver
      * @see #loadView(Class)
      * @see #loadView(Class, ResourceBundle)
      */
@@ -83,18 +87,100 @@ public class FxWeaver {
         return viewContainer.get(0);
     }
 
-    public <C> C loadController(Class<C> controllerClass, String url) {
-        return loadController(controllerClass, url, null);
+    /**
+     * Load controller instance, potentially weaved with a FXML view declaring the given class as fx:controller.
+     * <p/>
+     * The possible FXML resource may be given as a location in the classpath. If the FXML file is resolvable, the
+     * defined view within will be loaded by {@link FXMLLoader}. The controller will then be instantiated based on the
+     * fx:controller attribute, using the bean factory from {@link #FxWeaver(Callback, Runnable)}. If the bean factory
+     * is based on a dependency management framework such as Spring, Guice or CDI, this means that the instance will be
+     * fully managed and injected as declared.
+     * <p/>
+     * If the controller class does not come with a resolvable FXML view resource, the controller will be instantiated
+     * by the given bean factory directly.
+     *
+     * @param controllerClass The controller class of which a weaved instance should be provided
+     * @param location        The location of the FXML view to load as a classloader resource. May be <tt>null</tt> or
+     *                        not resolvable, in which case the controller will be directly instantiated by the given
+     *                        bean factory.
+     * @param <C>             The controller type
+     * @return A managed instance of the requested controller, potentially weaved with its view
+     * @see #FxWeaver(Callback, Runnable)
+     * @see FXMLLoader
+     */
+    public <C> C loadController(Class<C> controllerClass, String location) {
+        return loadController(controllerClass, location, null);
     }
 
-    public <C> C loadController(Class<C> controllerClass, String url, ResourceBundle resourceBundle) {
-        return load(controllerClass, url, resourceBundle, null);
+    /**
+     * Load controller instance, potentially weaved with a FXML view declaring the given class as fx:controller.
+     * <p/>
+     * The possible FXML resource may be given as a location in the classpath. If the FXML file is resolvable, the
+     * defined view within will be loaded by {@link FXMLLoader}. The controller will then be instantiated based on the
+     * fx:controller attribute, using the bean factory from {@link #FxWeaver(Callback, Runnable)}. If the bean factory
+     * is based on a dependency management framework such as Spring, Guice or CDI, this means that the instance will be
+     * fully managed and injected as declared.
+     * <p/>
+     * If the controller class does not come with a resolvable FXML view resource, the controller will be instantiated
+     * by the given bean factory directly.
+     *
+     * @param controllerClass The controller class of which a weaved instance should be provided
+     * @param location        The location of the FXML view to load as a classloader resource. May be <tt>null</tt> or
+     *                        not resolvable, in which case the controller will be directly instantiated by the given
+     *                        bean factory.
+     * @param resourceBundle  The optional {@link ResourceBundle} to use for view creation. May be <tt>null</tt>
+     * @param <C>             The controller type
+     * @return A managed instance of the requested controller, potentially weaved with its view
+     * @see #FxWeaver(Callback, Runnable)
+     * @see FXMLLoader
+     */
+    public <C> C loadController(Class<C> controllerClass, String location, ResourceBundle resourceBundle) {
+        return load(controllerClass, location, resourceBundle, null);
     }
 
+    /**
+     * Load controller instance, potentially weaved with a FXML view declaring the given class as fx:controller.
+     * <p/>
+     * The possible FXML resource is inferred from a {@link FxmlView} annotation at the controller class or the simple
+     * classname and package of said class if it was not annotated like this. If the FXML file is resolvable, the
+     * defined view within will be loaded by {@link FXMLLoader}. The controller will then be instantiated based on the
+     * fx:controller attribute, using the bean factory from {@link #FxWeaver(Callback, Runnable)}. If the bean factory
+     * is based on a dependency management framework such as Spring, Guice or CDI, this means that the instance will be
+     * fully managed and injected as declared.
+     * <p/>
+     * If the controller class does not come with a resolvable FXML view resource, the controller will be instantiated
+     * by the given bean factory directly.
+     *
+     * @param controllerClass The controller class of which a weaved instance should be provided
+     * @param <C>             The controller type
+     * @return A managed instance of the requested controller, potentially weaved with its view
+     * @see #FxWeaver(Callback, Runnable)
+     * @see FXMLLoader
+     */
     public <C> C loadController(Class<C> controllerClass) {
         return loadController(controllerClass, (ResourceBundle) null);
     }
 
+    /**
+     * Load controller instance, potentially weaved with a FXML view declaring the given class as fx:controller.
+     * <p/>
+     * The possible FXML resource is inferred from a {@link FxmlView} annotation at the controller class or the simple
+     * classname and package of said class if it was not annotated like this. If the FXML file is resolvable, the
+     * defined view within will be loaded by {@link FXMLLoader}. The controller will then be instantiated based on the
+     * fx:controller attribute, using the bean factory from {@link #FxWeaver(Callback, Runnable)}. If the bean factory
+     * is based on a dependency management framework such as Spring, Guice or CDI, this means that the instance will be
+     * fully managed and injected as declared.
+     * <p/>
+     * If the controller class does not come with a resolvable FXML view resource, the controller will be instantiated
+     * by the given bean factory directly.
+     *
+     * @param controllerClass The controller class of which a weaved instance should be provided
+     * @param resourceBundle  The optional {@link ResourceBundle} to use for view creation. May be <tt>null</tt>
+     * @param <C>             The controller type
+     * @return A managed instance of the requested controller, potentially weaved with its view
+     * @see #FxWeaver(Callback, Runnable)
+     * @see FXMLLoader
+     */
     public <C> C loadController(Class<C> controllerClass, ResourceBundle resourceBundle) {
         return load(controllerClass, buildFxmlReference(controllerClass), resourceBundle, null);
     }
@@ -103,20 +189,48 @@ public class FxWeaver {
         return beanType.cast(beanFactory.call(beanType));
     }
 
-    protected <V extends Node, C> C load(Class<C> callerClass, String location, ResourceBundle resourceBundle,
-                                         Consumer<V> viewConsumer) {
+    /**
+     * Load controller instance, potentially weaved with a FXML view declaring the given class as fx:controller.
+     * <p/>
+     * The possible FXML resource is inferred from a {@link FxmlView} annotation at the controller class or the simple
+     * classname and package of said class if it was not annotated like this. If the FXML file is resolvable, the
+     * defined view within will be loaded by {@link FXMLLoader}. The controller will then be instantiated based on the
+     * fx:controller attribute, using the bean factory from {@link #FxWeaver(Callback, Runnable)}. If the bean factory
+     * is based on a dependency management framework such as Spring, Guice or CDI, this means that the instance will be
+     * fully managed and injected as declared.
+     * <p/>
+     * If the controller class does not come with a resolvable FXML view resource, the controller will be instantiated
+     * by the given bean factory directly.
+     *
+     * @param controllerClass The controller class of which a weaved instance should be provided
+     * @param location        The location of the FXML view to load as a classloader resource. May be <tt>null</tt> or
+     *                        not resolvable, in which case the controller will be directly instantiated by the given
+     *                        bean factory.
+     * @param resourceBundle  The optional {@link ResourceBundle} to use for view creation. May be <tt>null</tt>
+     * @param viewConsumer    An optional consumer to consume the view after loading with {@link FXMLLoader}.
+     * @param <V>             The view type
+     * @param <C>             The controller type
+     * @return A managed instance of the requested controller, potentially weaved with its view
+     * @see #FxWeaver(Callback, Runnable)
+     * @see FXMLLoader
+     */
+    protected <V extends Node, C> C load(@Nonnull Class<C> controllerClass, @Nullable String location,
+                                         @Nullable ResourceBundle resourceBundle,
+                                         @Nullable Consumer<V> viewConsumer) {
         return Optional.ofNullable(location)
-                .map(callerClass::getResource)
+                .map(controllerClass::getResource)
                 .<C>map(url -> loadByView(url, resourceBundle, viewConsumer))
-                .orElseGet(() -> getBean(callerClass));
+                .orElseGet(() -> getBean(controllerClass));
     }
 
-    private <V extends Node, C> C loadByView(@Nonnull URL url, ResourceBundle resourceBundle, Consumer<V> viewConsumer) {
+    private <V extends Node, C> C loadByView(@Nonnull URL url, @Nullable ResourceBundle resourceBundle,
+                                             @Nullable Consumer<V> viewConsumer) {
         return loadByViewUsingFxLoader(new FXMLLoader(), url, resourceBundle, viewConsumer);
     }
 
-    <V extends Node, C> C loadByViewUsingFxLoader(FXMLLoader loader, @Nonnull URL url,
-                                                  ResourceBundle resourceBundle, Consumer<V> viewConsumer) {
+    <V extends Node, C> C loadByViewUsingFxLoader(@Nonnull FXMLLoader loader, @Nonnull URL url,
+                                                  @Nullable ResourceBundle resourceBundle,
+                                                  @Nullable Consumer<V> viewConsumer) {
         try (InputStream fxmlStream = url.openStream()) {
             LOG.debug("[load]: Loading {}", url);
             loader.setLocation(url);
@@ -135,13 +249,13 @@ public class FxWeaver {
     }
 
     /**
-     * Build a FXML view location reference for controller classes, based on {@link @FxmlView} annotation
-     * or simple classname.
+     * Build a FXML view location reference for controller classes, based on {@link @FxmlView} annotation or simple
+     * classname.
      *
-     * @param c The class to build a FXML location for. If it does not contain a {@link FxmlView} annotation
-     *          to specify resource to load, it is assumed that the view resides in the same package, named
+     * @param c The class to build a FXML location for. If it does not contain a {@link FxmlView} annotation to specify
+     *          resource to load, it is assumed that the view resides in the same package, named
      *          {c.getSimpleName()}.fxml
-     * @return  a resource location suitable for loading by {@link Class#getResource(String)}
+     * @return a resource location suitable for loading by {@link Class#getResource(String)}
      */
     protected String buildFxmlReference(@Nonnull Class<?> c) {
         return Optional.ofNullable(c.getAnnotation(FxmlView.class)).map(FxmlView::value)
@@ -149,6 +263,9 @@ public class FxWeaver {
                 .orElse(c.getSimpleName() + ".fxml");
     }
 
+    /**
+     * Perform the provided close method and call {@link Platform#exit()}.
+     */
     public void shutdown() {
         closeCommand.run();
         Platform.exit();
