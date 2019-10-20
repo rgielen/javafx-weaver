@@ -22,17 +22,17 @@ import java.lang.annotation.*;
  * <pre>
  *     &#64;FxmlView
  *     public class Foo {
- *
+ *          // try to load Foo.fxml in same package
  *     }
  *
  *     &#64;FxmlView("view.fxml")
  *     public class Foo {
- *
+ *          // try to load view.fxml in same package
  *     }
  *
  *     &#64;FxmlView("/somedir/view.fxml")
  *     public class Foo {
- *
+ *          // try to load view.fxml in root package somedir
  *     }
  *
  * </pre>
