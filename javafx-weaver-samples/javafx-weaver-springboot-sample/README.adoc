@@ -1,0 +1,33 @@
+:toc:
+:toc-placement!:
+ifndef::env-github[]
+:icons: font
+endif::[]
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+ifdef::env-github,env-browser[:outfilesuffix: .adoc]
+endif::[]
+
+Example application using Spring Boot to bootstrap a JavaFx application and FxWeaver to weave FXML views with their Spring-managed controller instances.
+
+toc::[]
+
+== Setup
+
+Create a simple Spring Boot Maven project.
+Add JavaFX dependencies as required.
+
+Then add ```javafx-weaver-spring``` in the desired version:
+[source,xml]
+----
+<dependency>
+    <groupId>net.rgielen</groupId>
+    <artifactId>javafx-weaver-spring</artifactId>
+    <version>${javafx-weaver.version}</version>
+</dependency>
+----
