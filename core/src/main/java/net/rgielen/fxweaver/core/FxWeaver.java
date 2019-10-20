@@ -18,8 +18,23 @@ import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
 /**
- * FxWeaver is the core weaving facility.
+ * FxWeaver is the core weaving facility, enabling Controllers and Views to be instantiated by
+ * a dependency injection framework such as (but not limited to) Spring.
+ * <p/>
+ * The following example requires a Spring ConfigurableApplicationContext to be instantiated.
+ * If now MainController is declared as Spring managed bean, it will get created and injected
+ * by Spring.
  *
+ * If a managed Controller class contains an {@link FxmlView} annotation, attached FXML views are
+ * injected as well.
+ *
+ * <pre>
+ *     ConfigurableApplicationContext applicationContext = ...
+ *     FxWeaver fxWeaver = new FxWeaver(applicationContext::getBean, applicationContext::close);
+ *     Scene scene = new Scene(fxWeaver.loadView(MainController.class), 400, 300);
+ * </pre>
+ *
+ * @see FxmlView
  * @author Rene Gielen
  */
 public class FxWeaver {
@@ -29,12 +44,27 @@ public class FxWeaver {
     private final Callback<Class<?>, Object> beanFactory;
     private final Runnable closeCommand;
 
+    /**
+     * Create a FxWeaver instance.
+     * <p/>
+     * Example:
+     * <pre>
+     *     ConfigurableApplicationContext applicationContext = ...
+     *     FxWeaver fxWeaver = new FxWeaver(applicationContext::getBean, applicationContext::close);
+     * </pre>
+     * @param beanFactory The beanFactory callback to be called for requesting a bean of given class
+     *                    when e.g. {@link #loadView(Class)} is called.
+     * @param closeCommand The function to close a bean factory attached to FxWeaver
+     *
+     * @see #loadView(Class)
+     * @see #loadView(Class, ResourceBundle)
+     */
     public FxWeaver(Callback<Class<?>, Object> beanFactory, Runnable closeCommand) {
         this.beanFactory = beanFactory;
         this.closeCommand = closeCommand;
     }
 
-    public  <V extends Node> V loadView(Object caller, String url) {
+    public <V extends Node> V loadView(Object caller, String url) {
         return loadView(caller, url, null);
     }
 
@@ -47,7 +77,7 @@ public class FxWeaver {
     }
 
     @SuppressWarnings("unchecked")
-    public  <V extends Node> V loadView(Object caller, String url, ResourceBundle resourceBundle) {
+    public <V extends Node> V loadView(Object caller, String url, ResourceBundle resourceBundle) {
         List<V> viewContainer = new ArrayList<>(1);
         load(caller, url, resourceBundle, v -> viewContainer.add((V) v));
         return viewContainer.get(0);
@@ -74,7 +104,8 @@ public class FxWeaver {
         return (C) beanFactory.call(beanType);
     }
 
-    protected  <V extends Node, C> C load(Object caller, String location, ResourceBundle resourceBundle, Consumer<V> viewConsumer) {
+    protected <V extends Node, C> C load(Object caller, String location, ResourceBundle resourceBundle,
+                                         Consumer<V> viewConsumer) {
         final Class<?> callerClass = caller instanceof Class ? (Class<?>) caller : caller.getClass();
         URL url = callerClass.getResource(location);
         try (InputStream fxmlStream = url.openStream()) {
