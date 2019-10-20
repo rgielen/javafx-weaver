@@ -3,7 +3,7 @@ package net.rgielen.fxweaver.core;
 import java.lang.annotation.*;
 
 /**
- * Controllers annotated with @FxmlView declare that a given FXML file should be loeaded and weaved with the controller.
+ * Controllers annotated with @FxmlView declare that a given FXML file should be loaded and weaved with the controller.
  *
  * @author Rene Gielen
  */
