@@ -44,6 +44,7 @@
         <spring.version>4.1.8.RELEASE</spring.version>
         <assertj.version>3.13.2</assertj.version>
         <mockito.version>3.1.0</mockito.version>
+        <javafx.version>11.0.2</javafx.version>
     </properties>
 
     <modules>
@@ -62,6 +63,12 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-fxml</artifactId>
+                <version>${javafx.version}</version>
+                <optional>true</optional>
             </dependency>
 
             <dependency>

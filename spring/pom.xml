@@ -20,6 +20,11 @@
             <artifactId>spring-context</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <optional>true</optional>
+        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
