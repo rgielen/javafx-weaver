@@ -64,8 +64,8 @@ public class FxWeaver {
         this.closeCommand = closeCommand;
     }
 
-    public <V extends Node> V loadView(Object caller, String url) {
-        return loadView(caller, url, null);
+    public <V extends Node, C> V loadView(Class<C> controllerClass, String url) {
+        return loadView(controllerClass, url, null);
     }
 
     public <V extends Node, C> V loadView(Class<C> controllerClass) {
@@ -77,18 +77,18 @@ public class FxWeaver {
     }
 
     @SuppressWarnings("unchecked")
-    public <V extends Node> V loadView(Object caller, String url, ResourceBundle resourceBundle) {
+    public <V extends Node, C> V loadView(Class<C> controllerClass, String url, ResourceBundle resourceBundle) {
         List<V> viewContainer = new ArrayList<>(1);
-        load(caller, url, resourceBundle, v -> viewContainer.add((V) v));
+        load(controllerClass, url, resourceBundle, v -> viewContainer.add((V) v));
         return viewContainer.get(0);
     }
 
-    public <C> C loadController(Object caller, String url) {
-        return loadController(caller, url, null);
+    public <C> C loadController(Class<C> controllerClass, String url) {
+        return loadController(controllerClass, url, null);
     }
 
-    public <C> C loadController(Object caller, String url, ResourceBundle resourceBundle) {
-        return load(caller, url, resourceBundle, null);
+    public <C> C loadController(Class<C> controllerClass, String url, ResourceBundle resourceBundle) {
+        return load(controllerClass, url, resourceBundle, null);
     }
 
     public <C> C loadController(Class<C> controllerClass) {
@@ -99,18 +99,26 @@ public class FxWeaver {
         return load(controllerClass, buildFxmlReference(controllerClass), resourceBundle, null);
     }
 
-    @SuppressWarnings("unchecked")
     public <C> C getBean(Class<C> beanType) {
-        return (C) beanFactory.call(beanType);
+        return beanType.cast(beanFactory.call(beanType));
     }
 
-    protected <V extends Node, C> C load(Object caller, String location, ResourceBundle resourceBundle,
+    protected <V extends Node, C> C load(Class<C> callerClass, String location, ResourceBundle resourceBundle,
                                          Consumer<V> viewConsumer) {
-        final Class<?> callerClass = caller instanceof Class ? (Class<?>) caller : caller.getClass();
-        URL url = callerClass.getResource(location);
+        return Optional.ofNullable(location)
+                .map(callerClass::getResource)
+                .<C>map(url -> loadByView(url, resourceBundle, viewConsumer))
+                .orElseGet(() -> getBean(callerClass));
+    }
+
+    private <V extends Node, C> C loadByView(@Nonnull URL url, ResourceBundle resourceBundle, Consumer<V> viewConsumer) {
+        return loadByViewUsingFxLoader(new FXMLLoader(), url, resourceBundle, viewConsumer);
+    }
+
+    <V extends Node, C> C loadByViewUsingFxLoader(FXMLLoader loader, @Nonnull URL url,
+                                                  ResourceBundle resourceBundle, Consumer<V> viewConsumer) {
         try (InputStream fxmlStream = url.openStream()) {
             LOG.debug("[load]: Loading {}", url);
-            FXMLLoader loader = new FXMLLoader();
             loader.setLocation(url);
             loader.setControllerFactory(beanFactory);
             if (resourceBundle != null) {
