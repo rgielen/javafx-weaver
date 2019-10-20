@@ -4,10 +4,9 @@ import java.lang.annotation.*;
 
 /**
  * Controllers annotated with @FxmlView declare that a given FXML file should be loaded and weaved with the controller.
- *
  * <p/>
- * When loaded by {@link FxWeaver}, declared FXML views will be loaded automatically with the controller as per
- * JavaFX fx:controller facility.
+ * When loaded by {@link FxWeaver}, declared FXML views will be loaded automatically with the controller as per JavaFX
+ * fx:controller facility.
  * <ul>
  *     <li>
  *         When no {@link FxmlView#value()} is given, the resource name is inferred by the simple classname.
@@ -18,37 +17,41 @@ import java.lang.annotation.*;
  *         given, it is assumed to reside in or below the package of the declaring controller
  *     </li>
  * </ul>
- *
+ * <p/>
  * Examples:
  * <pre>
- *     @FxmlView
+ *     &#64;FxmlView
  *     public class Foo {
  *
  *     }
  *
- *     @FxmlView("view.fxml")
+ *     &#64;FxmlView("view.fxml")
  *     public class Foo {
  *
  *     }
  *
- *     @FxmlView("/somedir/view.fxml")
+ *     &#64;FxmlView("/somedir/view.fxml")
  *     public class Foo {
  *
  *     }
  *
  * </pre>
  *
+ * @author Rene Gielen
  * @see FxWeaver
  * @see FxWeaver#loadView(Class)
  * @see FxWeaver#loadController(Class)
- *
- * @author Rene Gielen
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface FxmlView {
 
+    /**
+     * The FXML file to be loaded as view, as class loader location.
+     * <p/>
+     * If not given, defaulting to simple class name plus <tt>.fxml</tt> extension in the same package.
+     */
     String value() default "";
 
 }

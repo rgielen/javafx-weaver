@@ -39,6 +39,7 @@ import java.util.function.Consumer;
  * </pre>
  *
  * @author Rene Gielen
+ * @noinspection unused, WeakerAccess
  * @see FxmlView
  */
 public class FxWeaver {
@@ -185,6 +186,13 @@ public class FxWeaver {
         return load(controllerClass, buildFxmlReference(controllerClass), resourceBundle, null);
     }
 
+    /**
+     * Get managed bean instance from bean factory provided in {@link #FxWeaver(Callback, Runnable)}.
+     *
+     * @param beanType The type of the bean to be instantiated.
+     * @param <C>      The bean type.
+     * @return The bean as defined in and returned from the bean factory
+     */
     public <C> C getBean(Class<C> beanType) {
         return beanType.cast(beanFactory.call(beanType));
     }
