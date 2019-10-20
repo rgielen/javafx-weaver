@@ -1,0 +1,6 @@
+image:https://maven-badges.herokuapp.com/maven-central/net.rgielen/javafx-weaver/badge.svg[Maven Central,link=http://search.maven.org/#search%7Cga%7C1%7Cnet.rgielen.javafx-weaver]
+image:https://api.travis-ci.org/rgielen/javafx-weaver.svg[Build Status,link=http://travis-ci.org/rgielen/javafx-weaver]
+
+== javafx-weaver
+
+An opinionated view on how to add dependency injection to JavaFX
