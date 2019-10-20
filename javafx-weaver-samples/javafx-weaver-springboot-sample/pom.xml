@@ -13,8 +13,10 @@
 	<version>1.1.0-SNAPSHOT</version>
 
 	<properties>
-		<java.version>1.8</java.version>
-	</properties>
+		<java.version>11</java.version>
+        <javafx.version>11.0.2</javafx.version>
+        <javafx-weaver.version>1.1.0-SNAPSHOT</javafx-weaver.version>
+    </properties>
 
 	<dependencies>
 		<dependency>
@@ -39,7 +41,25 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-	</dependencies>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.rgielen</groupId>
+            <artifactId>javafx-weaver-spring</artifactId>
+            <version>${javafx-weaver.version}</version>
+        </dependency>
+
+    </dependencies>
 
 	<build>
 		<plugins>
