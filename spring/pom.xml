@@ -3,7 +3,7 @@
     <parent>
         <artifactId>javafx-weaver</artifactId>
         <groupId>net.rgielen</groupId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>1.1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -14,14 +14,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>javafx-weaver-core</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.annotation</groupId>
-            <artifactId>jsr250-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -41,7 +33,7 @@
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
+            <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -1,20 +1,19 @@
 package net.rgielen.fxweaver.spring;
 
 import net.rgielen.fxweaver.core.FxWeaver;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
-
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.springframework.stereotype.Component;
 
 /**
  * SpringFxmlLoader is a Spring-powered version of FxWeaver.
  *
  * @author Rene Gielen
  */
-@Named
+@Component
 public class SpringFxWeaver extends FxWeaver {
 
-    @Inject
+    @Autowired
 	public SpringFxWeaver(ConfigurableApplicationContext context) {
         super(context::getBean, context::close);
     }

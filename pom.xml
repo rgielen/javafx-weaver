@@ -10,7 +10,7 @@
     <groupId>net.rgielen</groupId>
     <artifactId>javafx-weaver</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
 
     <description>
         An opinionated view on how to add dependency injection to JavaFX
@@ -40,8 +40,10 @@
         <character.encoding>UTF-8</character.encoding>
         <java.level>1.8</java.level>
         <project.build.sourceEncoding>${character.encoding}</project.build.sourceEncoding>
-        <slf4j.version>1.7.13</slf4j.version>
+        <slf4j.version>1.7.28</slf4j.version>
         <spring.version>4.1.8.RELEASE</spring.version>
+        <assertj.version>3.13.2</assertj.version>
+        <mockito.version>3.1.0</mockito.version>
     </properties>
 
     <modules>
@@ -52,19 +54,9 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>javax.inject</groupId>
-                <artifactId>javax.inject</artifactId>
-                <version>1</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.annotation</groupId>
-                <artifactId>jsr250-api</artifactId>
-                <version>1.0</version>
-            </dependency>
-            <dependency>
                 <groupId>com.google.code.findbugs</groupId>
                 <artifactId>jsr305</artifactId>
-                <version>1.3.9</version>
+                <version>3.0.0</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -87,40 +79,42 @@
             <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
-                <version>3.2.0</version>
+                <version>${assertj.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
-                <artifactId>mockito-all</artifactId>
-                <version>1.10.19</version>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
 
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.3</version>
-                <configuration>
-                    <source>${java.level}</source>
-                    <target>${java.level}</target>
-                    <encoding>${character.encoding}</encoding>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.10.3</version>
-                <configuration>
-                    <show>private</show>
-                    <additionalparam>-Xdoclint:none</additionalparam>
-                </configuration>
-            </plugin>
-        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.3</version>
+                    <configuration>
+                        <source>${java.level}</source>
+                        <target>${java.level}</target>
+                        <encoding>${character.encoding}</encoding>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.8.1</version>
+                    <configuration>
+                        <show>private</show>
+                        <additionalparam>-Xdoclint:none</additionalparam>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
     <profiles>
