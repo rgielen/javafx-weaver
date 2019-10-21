@@ -5,7 +5,7 @@
     <parent>
         <artifactId>javafx-weaver</artifactId>
         <groupId>net.rgielen</groupId>
-        <version>1.1.0</version>
+        <version>1.1.1-SNAPSHOT</version>
     </parent>
     <artifactId>javafx-weaver-samples</artifactId>
     <name>javafx-weaver-samples</name>
