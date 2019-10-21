@@ -15,16 +15,14 @@ import org.springframework.stereotype.Component;
 public class MainController {
 
     private final String greeting;
+    @FXML
+    public Label label;
+    @FXML
+    public Button button;
 
     public MainController(@Value("${spring.application.demo.greeting}") String greeting) {
         this.greeting = greeting;
     }
-
-    @FXML
-    public Label label;
-
-    @FXML
-    public Button button;
 
     @FXML
     public void initialize() {
