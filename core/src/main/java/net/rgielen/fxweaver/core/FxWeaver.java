@@ -363,7 +363,7 @@ public class FxWeaver {
     }
 
     /**
-     * Build a FXML view location reference for controller classes, based on {@link @FxmlView} annotation or simple
+     * Build a FXML view location reference for controller classes, based on {@link FxmlView} annotation or simple
      * classname.
      *
      * @param c The class to build a FXML location for. If it does not contain a {@link FxmlView} annotation to specify

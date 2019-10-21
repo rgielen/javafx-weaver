@@ -8,6 +8,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>javafx-weaver-core</artifactId>
+    <name>javafx-weaver-core</name>
 
     <dependencies>
         <dependency>
