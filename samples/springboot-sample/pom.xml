@@ -3,21 +3,29 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.2.0.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
+        <groupId>net.rgielen</groupId>
+        <artifactId>javafx-weaver-samples</artifactId>
+        <version>1.1.0-SNAPSHOT</version>
 	</parent>
-	<groupId>net.rgielen</groupId>
 	<artifactId>javafx-weaver-springboot-sample</artifactId>
-	<version>1.1.0-SNAPSHOT</version>
+	<name>javafx-weaver-springboot-sample</name>
 
 	<properties>
-		<java.version>11</java.version>
-        <javafx.version>11.0.2</javafx.version>
-        <javafx-weaver.version>1.1.0-SNAPSHOT</javafx-weaver.version>
+		<java.level>11</java.level>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <!-- Import dependency management from Spring Boot -->
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>2.2.0.RELEASE</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -45,18 +53,16 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>${javafx.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>${javafx.version}</version>
         </dependency>
 
         <dependency>
             <groupId>net.rgielen</groupId>
             <artifactId>javafx-weaver-spring</artifactId>
-            <version>${javafx-weaver.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
     </dependencies>
