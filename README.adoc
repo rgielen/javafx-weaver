@@ -1,6 +1,43 @@
 image:https://maven-badges.herokuapp.com/maven-central/net.rgielen/javafx-weaver/badge.svg[Maven Central,link=http://search.maven.org/#search%7Cga%7C1%7Cnet.rgielen.javafx-weaver]
 image:https://api.travis-ci.org/rgielen/javafx-weaver.svg[Build Status,link=http://travis-ci.org/rgielen/javafx-weaver]
 
-== javafx-weaver
+== JavaFX-Weaver
 
-An opinionated view on how to add dependency injection to JavaFX
+*An opinionated view on how to do dependency injection and FXML view handling in JavaFX.*
+
+Features:
+
+* Supportive tooling for using JavaFX together with dependency injection frameworks such as Spring or CDI
+* Declarative FXML view binding - Create a controller class and annotate it with ```@FxmlView``` and let ```FxWeaver``` handle view loading and instantiating
+* Support for ```fx:controller``` attribute in FXML, with controller classes being instantiated, autowired and fully managed by your DI framework of choice
+* Acquire managed controller instances with automatically weaved FXML views
+* Support for tiling / componentisation: Create view components with independent controllers and aggregate them in other views, again with full DI support
+* https://gluonhq.com/products/scene-builder/[SceneBuilder] fully supported, even when creating and using view tiles
+
+=== Getting Started
+
+Add ```javafx-weaver-core``` as a dependency to your project, e.g. with Maven:
+
+[source,xml]
+----
+<artifactId>javafx-weaver-core</artifactId>
+<groupId>net.rgielen</groupId>
+<version>1.1.0</version>
+----
+
+=== Using FxWeaver
+
+For now, refer to the JavaDocs and the https://github.com/rgielen/javafx-weaver/tree/master/samples/springboot-sample[Spring Boot FxWeaver Sample Project].
+
+More documentation to come.
+
+=== License
+
+The project is licensed under https://www.apache.org/licenses/LICENSE-2.0[Apache License V2.0].
+
+=== Contributing
+
+Feel free to open issues and pull requests on GitHub.
+This is a side project of mine, so please don't expect enterprise grade support.
+
+You can find me on Twitter as well: https://twitter.com/rgielen[@rgielen]
