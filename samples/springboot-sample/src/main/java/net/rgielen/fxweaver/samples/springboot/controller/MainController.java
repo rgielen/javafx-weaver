@@ -3,6 +3,8 @@ package net.rgielen.fxweaver.samples.springboot.controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
+import net.rgielen.fxweaver.core.FxControllerAndView;
 import net.rgielen.fxweaver.core.FxWeaver;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +26,8 @@ public class MainController {
     public Button helloButton;
     @FXML
     public Button openSimpleDialogButton;
+    @FXML
+    public Button openTiledDialogButton;
 
     public MainController(@Value("${spring.application.demo.greeting}") String greeting,
                           FxWeaver fxWeaver) {
@@ -38,6 +42,20 @@ public class MainController {
         );
         openSimpleDialogButton.setOnAction(
                 actionEvent -> fxWeaver.loadController(DialogController.class).show()
+        );
+        openTiledDialogButton.setOnAction(
+                actionEvent -> {
+                    FxControllerAndView<TiledDialogController, VBox> tiledDialog =
+                            fxWeaver.load(TiledDialogController.class);
+                    tiledDialog.getView().ifPresent(
+                            v -> {
+                                Label label = new Label();
+                                label.setText("Dynamically added Label");
+                                v.getChildren().add(label);
+                            }
+                    );
+                    tiledDialog.getController().show();
+                }
         );
     }
 

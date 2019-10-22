@@ -8,5 +8,6 @@
     <Button fx:id="helloButton" text="Say Hello!"/>
     <Label fx:id="label"/>
     <Button fx:id="openSimpleDialogButton" text="Open Simple Dialog"/>
+    <Button fx:id="openTiledDialogButton" text="Open Tiled Dialog"/>
 
 </VBox>
