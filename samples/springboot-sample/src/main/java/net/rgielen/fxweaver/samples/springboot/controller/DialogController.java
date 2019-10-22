@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
  * DialogController.
  *
  * @author Rene Gielen
+ * @noinspection WeakerAccess
  */
 @FxmlView("SimpleDialog.fxml")
 @Component
@@ -37,7 +38,7 @@ public class DialogController {
     }
 
     @FXML
-    public void click(ActionEvent actionEvent) {
+    void click(ActionEvent actionEvent) {
         stage.close();
     }
 }

@@ -8,6 +8,7 @@ class JavafxWeaverSpringbootSampleApplicationTests {
 
 	@Test
 	void contextLoads() {
+	    // do nothing
 	}
 
 }

@@ -11,6 +11,7 @@ import org.springframework.context.support.GenericApplicationContext;
 
 /**
  * @author <a href="mailto:rene.gielen@gmail.com">Rene Gielen</a>
+ * @noinspection RedundantThrows
  */
 public class SpringbootJavaFxApplication extends Application {
 

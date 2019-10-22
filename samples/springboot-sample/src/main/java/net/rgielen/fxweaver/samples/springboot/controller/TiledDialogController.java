@@ -1,7 +1,6 @@
 package net.rgielen.fxweaver.samples.springboot.controller;
 
 import javafx.fxml.FXML;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Component;
  * TiledDialogController.
  *
  * @author Rene Gielen
+ * @noinspection WeakerAccess
  */
 @Component
 public class TiledDialogController {

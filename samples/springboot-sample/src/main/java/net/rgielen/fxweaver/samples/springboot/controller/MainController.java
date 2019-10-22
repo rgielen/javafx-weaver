@@ -10,9 +10,6 @@ import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-/**
- * @author <a href="mailto:rene.gielen@gmail.com">Rene Gielen</a>
- */
 @Component
 @FxmlView // equal to: @FxmlView("MainController.fxml")
 public class MainController {

@@ -3,7 +3,7 @@ package net.rgielen.fxweaver.samples.springboot.controller.tiles;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import net.rgielen.fxweaver.core.FxmlView;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Component;
 
 /**
  * SimpleTileController.
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Controller;
  * @author Rene Gielen
  */
 @FxmlView
-@Controller
+@Component
 public class SimpleTileController {
 
     @FXML
