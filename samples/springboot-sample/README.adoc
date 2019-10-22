@@ -31,3 +31,64 @@ Then add ```javafx-weaver-spring``` in the desired version:
     <version>${javafx-weaver.version}</version>
 </dependency>
 ----
+
+== Bootstrap
+
+The bootstrap process is heavily inspired by Mr. Awesome Josh Long's https://spring.io/blog/2019/01/16/spring-tips-javafx[Spring Tips: JavaFX] installment.
+
+The main class looks a bit different than usual:
+
+[source,java]
+----
+@SpringBootApplication
+public class JavafxWeaverSpringbootSampleApplication {
+
+    public static void main(String[] args) {
+        Application.launch(SpringbootJavaFxApplication.class, args); // <1>
+    }
+
+    @Bean
+    public FxWeaver fxWeaver(ConfigurableApplicationContext applicationContext) {
+        // Would also work with javafx-weaver-core only:
+        // return new FxWeaver(applicationContext::getBean, applicationContext::close);
+        return new SpringFxWeaver(applicationContext); //<2>
+    }
+
+}
+----
+<1> Instead of calling ```SpringBootApplication.run()```, use a custom boostrap class inheriting from JavaFX ```Application```. This is needed to initialize JavaFX correctly
+<2> Provide a ```FxWeaver``` bean for making weaving functionality accessible.
+Can be either plain ```FxWeaver``` instance or a more convenient ```SpringFxWeaver```
+
+It is accompanied by the ```SpringbootJavaFxApplication```which does the heavy lifting for creating a proper JavaFX application with initialized Spring context.
+The actual sample source is a little bit more elaborate, but essentially it boils down to:
+
+[source,java]
+----
+public class SpringbootJavaFxApplication extends Application {
+
+    private ConfigurableApplicationContext context;
+
+    @Override
+    public void init() throws Exception {
+        this.context = new SpringApplicationBuilder() //<1>
+                .sources(JavafxWeaverSpringbootSampleApplication.class)
+                .run(getParameters().getRaw().toArray(new String[0]));
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        context.publishEvent(new StageReadyEvent(primaryStage)); // <2>
+    }
+
+    @Override
+    public void stop() throws Exception { //<3>
+        this.context.close();
+        Platform.exit();
+    }
+}
+----
+<1> Programmatically create a Spring Boot context in the ```Application#init()``` method.
+<2> Kick off application logic by sending a ```StageReadeEvent``` containing the primary Stage as payload.
+<3> Support graceful shutdown for both Spring context and JavaFX platform
+
