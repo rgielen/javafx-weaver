@@ -11,7 +11,7 @@ Features:
 * Declarative FXML view binding - Create a controller class and annotate it with ```@FxmlView``` and let ```FxWeaver``` handle view loading and instantiating
 * Support for ```fx:controller``` attribute in FXML, with controller classes being instantiated, autowired and fully managed by your DI framework of choice
 * Acquire managed controller instances with automatically weaved FXML views
-* Support for tiling / componentisation: Create view components with independent controllers and aggregate them in other views, again with full DI support
+* Support for tiling / componentisation: Create view components with independent controllers and aggregate them in other views using ```fx:include```, again with full DI support
 * https://gluonhq.com/products/scene-builder/[SceneBuilder] fully supported, even when creating and using view tiles
 
 === Getting Started

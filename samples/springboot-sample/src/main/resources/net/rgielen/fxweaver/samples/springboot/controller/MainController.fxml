@@ -5,7 +5,9 @@
 <VBox xmlns:fx="http://javafx.com/fxml" spacing="10" alignment="CENTER"
       fx:controller="net.rgielen.fxweaver.samples.springboot.controller.MainController">
 
-    <Button fx:id="button" text="Say Hello!"/>
+    <Button fx:id="helloButton" text="Say Hello!"/>
     <Label fx:id="label"/>
+    <Button fx:id="openSimpleDialogButton" text="Open Simple Dialog"/>
+    <Button fx:id="openTiledDialogButton" text="Open Tiled Dialog"/>
 
 </VBox>

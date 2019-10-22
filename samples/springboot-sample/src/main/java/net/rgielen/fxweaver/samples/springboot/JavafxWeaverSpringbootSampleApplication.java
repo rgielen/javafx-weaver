@@ -22,5 +22,4 @@ public class JavafxWeaverSpringbootSampleApplication {
         return new SpringFxWeaver(applicationContext);
     }
 
-
 }

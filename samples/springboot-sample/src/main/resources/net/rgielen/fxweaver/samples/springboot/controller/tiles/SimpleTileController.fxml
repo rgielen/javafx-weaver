@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
+<VBox alignment="CENTER" xmlns="http://javafx.com/javafx/8.0.232-ea"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="net.rgielen.fxweaver.samples.springboot.controller.tiles.SimpleTileController"
+      style="-fx-background-color: #ffffff">
+
+    <Label fx:id="label" text="A Simple Tile"/>
+    <Button text="Do nothing"/>
+
+</VBox>
