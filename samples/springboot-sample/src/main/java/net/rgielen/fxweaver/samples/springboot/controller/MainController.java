@@ -3,6 +3,7 @@ package net.rgielen.fxweaver.samples.springboot.controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import net.rgielen.fxweaver.core.FxWeaver;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -15,19 +16,28 @@ import org.springframework.stereotype.Component;
 public class MainController {
 
     private final String greeting;
+    private final FxWeaver fxWeaver;
+
     @FXML
     public Label label;
     @FXML
-    public Button button;
+    public Button helloButton;
+    @FXML
+    public Button openSimpleDialogButton;
 
-    public MainController(@Value("${spring.application.demo.greeting}") String greeting) {
+    public MainController(@Value("${spring.application.demo.greeting}") String greeting,
+                          FxWeaver fxWeaver) {
         this.greeting = greeting;
+        this.fxWeaver = fxWeaver;
     }
 
     @FXML
     public void initialize() {
-        this.button.setOnAction(
+        helloButton.setOnAction(
                 actionEvent -> this.label.setText(greeting)
+        );
+        openSimpleDialogButton.setOnAction(
+                actionEvent -> fxWeaver.loadController(DialogController.class).show()
         );
     }
 
