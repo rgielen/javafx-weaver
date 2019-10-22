@@ -1,4 +1,6 @@
-package net.rgielen.fxweaver.core;
+package net.rgielen.fxweaver.core.support;
+
+import net.rgielen.fxweaver.core.FxmlView;
 
 /**
  * FxmlViewClassAnnotated.

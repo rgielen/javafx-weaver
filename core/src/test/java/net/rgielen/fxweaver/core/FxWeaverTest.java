@@ -1,20 +1,24 @@
 package net.rgielen.fxweaver.core;
 
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
+import javafx.scene.layout.Pane;
+import net.rgielen.fxweaver.core.support.FxmlViewClassAnnotated;
+import net.rgielen.fxweaver.core.support.FxmlViewClassAnnotatedWithValue;
+import net.rgielen.fxweaver.core.support.FxmlViewClassNonAnnotated;
+import net.rgielen.fxweaver.core.support.SimpleBean;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class FxWeaverTest {
 
-    FxWeaver fxWeaver;
+    private FxWeaver fxWeaver;
 
     @Before
     public void setUp() throws Exception {
@@ -50,5 +54,13 @@ public class FxWeaverTest {
         fxWeaver.loadByViewUsingFxLoader(fxmlLoader, this.getClass().getResource("foo.fxml"), null, null);
         verify(fxmlLoader).load(any(InputStream.class));
         verify(fxmlLoader).getController();
+    }
+
+    @Test
+    public void load() throws Exception {
+        FxWeaver.ControllerAndView<SimpleBean, Pane> cav = fxWeaver.load(SimpleBean.class, "/net/rgielen/fxweaver/core/foo.fxml");
+        assertThat(cav).isNotNull();
+        assertThat(cav.getController()).isNotNull().isInstanceOfAny(SimpleBean.class);
+        assertThat(cav.getView()).isNotNull().isInstanceOfAny(Pane.class);
     }
 }

@@ -49,6 +49,32 @@ public class FxWeaver {
     private final Callback<Class<?>, Object> beanFactory;
     private final Runnable closeCommand;
 
+    public static class ControllerAndView<C, V extends Node> {
+        final C controller;
+        final V view;
+
+        public ControllerAndView(C controller, V view) {
+            this.view = view;
+            this.controller = controller;
+        }
+
+        public C getController() {
+            return controller;
+        }
+
+        public V getView() {
+            return view;
+        }
+
+        @Override
+        public String toString() {
+            return "ControllerAndView{" +
+                    "controller=" + controller +
+                    ", view=" + view +
+                    '}';
+        }
+    }
+
     /**
      * Create a FxWeaver instance.
      * <p/>
@@ -340,6 +366,19 @@ public class FxWeaver {
     private <V extends Node, C> C loadByView(@Nonnull URL url, @Nullable ResourceBundle resourceBundle,
                                              @Nullable Consumer<V> viewConsumer) {
         return loadByViewUsingFxLoader(new FXMLLoader(), url, resourceBundle, viewConsumer);
+    }
+
+    <V extends Node, C> ControllerAndView<C, V> load(Class<C> controllerClass, @Nonnull String location) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            V view = fxmlLoader.load(controllerClass.getResource(location).openStream());
+            fxmlLoader.setControllerFactory(beanFactory);
+            C controller = fxmlLoader.getController();
+            return new ControllerAndView<C,V>(controller, view);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     <V extends Node, C> C loadByViewUsingFxLoader(@Nonnull FXMLLoader loader, @Nonnull URL url,
