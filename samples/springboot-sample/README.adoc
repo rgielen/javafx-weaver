@@ -170,3 +170,22 @@ Also, let's look at the FXML view definition:
 <1> Declare the controller class to be instantiated with the view.
 This is where ```FxWeaver``` is supposed to help, such that Spring is used for instantiation during FXML load mechanism.
 <2> A Label component that get's injected into the controller's ```label``` field based on the ```@FXML``` annotation and field name matching value in ```fx:id``` attribute.
+
+=== What FxWeaver actually does
+
+When calling one of the ```FxWeaver``` ```load*``` methods supplying a controller class, ```FxWeaver``` does the following:
+
+. Introspect controller class for existence of ```@FxmlView``` annotation
+. Infer the FXML resource location by either taking the exact name provided as ```@FxmlView``` value attribute or by using the simple classname plus ```.fxml``` suffix.
+If not referencing an absolute path within the classpath, it is assumed that the resource is located in the same package as the controller class
+. Construct a ```FXMLLoader``` and set the ```ResourceBundle```, if provided, and the controller factory.
+The controller factory used will be the bean creation function provided to the ```FxWeaver``` constructor.
+In case of Spring, this is ```applicationContext::getBean```
+. Let ```FXMLLoader``` load the FXML view resource, and once it contains a ```fx:controller``` attribute, let it instantiate the controller instance by using the provided controller factory.
+Along the way, ```FXMLLoader``` will also take care of injecting ```@FXML``` annotated fields.
+. Return either
+  * the controller instance when using ```<C> C loadController(Class<C> controllerClass ...)``` methods
+  * the view instance when using ```<V extends Node, C> V loadView(Class<C> controllerClass ...)``` methods
+  * or both when using ```<V extends Node, C> FxControllerAndView<C, V> load(Class<C> controllerClass ...)``` methods.
+  * Any ```IOException``` thrown during loading is wrapped in a more useful ```FxLoadException``` deriving from ```RuntimeException```
+
