@@ -58,7 +58,7 @@ public class JavafxWeaverSpringbootSampleApplication {
 ----
 <1> Instead of calling ```SpringBootApplication.run()```, use a custom boostrap class inheriting from JavaFX ```Application```. This is needed to initialize JavaFX correctly
 <2> Provide a ```FxWeaver``` bean for making weaving functionality accessible.
-Can be either plain ```FxWeaver``` instance or a more convenient ```SpringFxWeaver```
+Can be either a plain ```FxWeaver``` instance or a more convenient ```SpringFxWeaver```
 
 It is accompanied by the ```SpringbootJavaFxApplication``` which does the heavy lifting for creating a proper JavaFX application with initialized Spring context.
 The actual sample source is a little bit more elaborate, but essentially it boils down to:
@@ -301,3 +301,97 @@ public class MainController {
 ----
 <1> Obtain the view, and if present, programmatically add a label to it
 <2> Use the controller show method to display the dialog
+
+=== Tiled Views, (re-)using independent Components
+
+FXML's ```fx:include``` mechanism is fully supported in ```FxWeaver```.
+View tiles can have independent controllers are correctly managed and injected by both Spring and ```FXMLLoader```.
+https://gluonhq.com/products/scene-builder/[SceneBuilder] is fully supported.
+
+.TiledDialogController.java
+[source,java]
+----
+@Component
+public class TiledDialogController {
+
+    private Stage stage;
+
+    @FXML
+    private VBox dialog;
+    @FXML
+    public Button closeButton;
+
+
+    @FXML
+    public void initialize() {
+        this.stage = new Stage();
+        stage.setScene(new Scene(dialog)); //<1>
+    }
+
+    public void show() {
+        stage.show();
+        closeButton.setOnAction(
+                a -> stage.close()
+        );
+    }
+
+}
+----
+<1> Create and use the "master view" as usual
+
+.TiledDialogController.fxml
+[source,xml]
+----
+<VBox fx:id="dialog" alignment="CENTER" prefHeight="200.0" prefWidth="200.0" spacing="10"
+      xmlns="http://javafx.com/javafx/8.0.232-ea"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="net.rgielen.fxweaver.samples.springboot.controller.TiledDialogController">
+
+    <fx:include source="tiles/SimpleTileController.fxml"/> <!--1-->
+    <Button fx:id="closeButton" mnemonicParsing="false" text="Close"/>
+
+</VBox>
+----
+<1> Use ```fx:include``` to embed another view defined using FXML
+
+.SimpleTileController.fxml
+[source,xml]
+----
+<VBox alignment="CENTER" xmlns="http://javafx.com/javafx/8.0.232-ea"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="net.rgielen.fxweaver.samples.springboot.controller.tiles.SimpleTileController" <!--1-->
+      style="-fx-background-color: #ffffff">
+
+    <Label fx:id="label" text="A Simple Tile"/>
+    <Button text="Do nothing"/>
+
+</VBox>
+----
+<1> The view tile declares its own controller bean, which gets instantiated and managed correctly and automatically
+
+[source,java]
+----
+@FxmlView
+@Component //<1>
+public class SimpleTileController {
+
+    @FXML
+    Label label;
+
+    @FXML
+    public void initialize() {
+        label.setText(label.getText() + " initialized");
+    }
+
+}
+----
+<1> The weaved controller instance will be a fully managed Spring bean
+
+If used like this, view tiles can also be re-used, even as standalone views.
+
+== Contributing
+
+Feel free to open issues and pull requests on GitHub.
+This is a side project of mine, so please don't expect enterprise grade support.
+
+You can find me on Twitter as well: https://twitter.com/rgielen[@rgielen]
