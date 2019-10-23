@@ -7,8 +7,6 @@ import javafx.util.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -183,7 +181,7 @@ public class FxWeaver {
      * @see FXMLLoader
      */
     public <V extends Node, C> V loadView(Class<C> controllerClass, String location, ResourceBundle resourceBundle) {
-        return this.<V,C>load(controllerClass, location, resourceBundle)
+        return this.<V, C>load(controllerClass, location, resourceBundle)
                 .getView()
                 .orElse(null);
     }
@@ -318,7 +316,7 @@ public class FxWeaver {
      * @see #FxWeaver(Callback, Runnable)
      * @see FXMLLoader
      */
-    public  <V extends Node, C> FxControllerAndView<C, V> load(@Nonnull Class<C> controllerClass) {
+    public <V extends Node, C> FxControllerAndView<C, V> load(Class<C> controllerClass) {
         return load(controllerClass, null);
     }
 
@@ -344,8 +342,8 @@ public class FxWeaver {
      * @see #FxWeaver(Callback, Runnable)
      * @see FXMLLoader
      */
-    public  <V extends Node, C> FxControllerAndView<C, V> load(@Nonnull Class<C> controllerClass,
-                                                                 @Nullable ResourceBundle resourceBundle) {
+    public <V extends Node, C> FxControllerAndView<C, V> load(Class<C> controllerClass,
+                                                              ResourceBundle resourceBundle) {
         return load(controllerClass, buildFxmlReference(controllerClass), resourceBundle);
     }
 
@@ -374,21 +372,21 @@ public class FxWeaver {
      * @see #FxWeaver(Callback, Runnable)
      * @see FXMLLoader
      */
-    protected <V extends Node, C> FxControllerAndView<C, V> load(@Nonnull Class<C> controllerClass,
-                                                                 @Nullable String location,
-                                                                 @Nullable ResourceBundle resourceBundle) {
+    protected <V extends Node, C> FxControllerAndView<C, V> load(Class<C> controllerClass,
+                                                                 String location,
+                                                                 ResourceBundle resourceBundle) {
         return Optional.ofNullable(location)
                 .map(controllerClass::getResource)
                 .map(url -> this.<V, C>loadByView(url, resourceBundle))
                 .orElseGet(() -> FxControllerAndView.ofController(getBean(controllerClass)));
     }
 
-    private <V extends Node, C> FxControllerAndView<C, V> loadByView(@Nonnull URL url, @Nullable ResourceBundle resourceBundle) {
+    private <V extends Node, C> FxControllerAndView<C, V> loadByView(URL url, ResourceBundle resourceBundle) {
         return loadByViewUsingFxmlLoader(new FXMLLoader(), url, resourceBundle);
     }
 
-    <V extends Node, C> FxControllerAndView<C, V> loadByViewUsingFxmlLoader(@Nonnull FXMLLoader loader, @Nonnull URL url,
-                                                                            @Nullable ResourceBundle resourceBundle) {
+    <V extends Node, C> FxControllerAndView<C, V> loadByViewUsingFxmlLoader(FXMLLoader loader, URL url,
+                                                                            ResourceBundle resourceBundle) {
         try (InputStream fxmlStream = url.openStream()) {
             LOG.debug("Loading FXML resource at {}", url);
             loader.setLocation(url);
@@ -412,7 +410,7 @@ public class FxWeaver {
      *          {c.getSimpleName()}.fxml
      * @return a resource location suitable for loading by {@link Class#getResource(String)}
      */
-    protected String buildFxmlReference(@Nonnull Class<?> c) {
+    protected String buildFxmlReference(Class<?> c) {
         return Optional.ofNullable(c.getAnnotation(FxmlView.class)).map(FxmlView::value)
                 .map(s -> s.isEmpty() ? null : s)
                 .orElse(c.getSimpleName() + ".fxml");
