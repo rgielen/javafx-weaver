@@ -94,7 +94,7 @@ public class SpringbootJavaFxApplication extends Application {
 
 == Using FxWeaver
 
-=== Create Main Window with weaved View
+=== Create Main Window with a weaved View
 
 We are now ready to create our main application window (aka Scene), and it can be done within a Spring managed bean consuming the ```StageReadyEvent``` emitted earlier:
 
@@ -128,22 +128,21 @@ To get the full picture, we need have a look at the important parts of ```MainCo
 
 [source,java]
 ----
+package net.rgielen.fxweaver.samples.springboot.controller;
+
 @Component
 @FxmlView // equal to: @FxmlView("MainController.fxml") //<1>
 public class MainController {
 
     private final String greeting;
-    private final FxWeaver fxWeaver;
 
     @FXML //<2>
     public Label label;
 
     // ...
 
-    public MainController(@Value("${spring.application.demo.greeting}") String greeting, //<3>
-                          FxWeaver fxWeaver) {
+    public MainController(@Value("${spring.application.demo.greeting}") String greeting) { //<3>
         this.greeting = greeting;
-        this.fxWeaver = fxWeaver;
     }
 
     // ...
@@ -151,8 +150,8 @@ public class MainController {
 ----
 <1> Declare that a FXML view belongs to this class.
 If no value provided, infer it to be __<Simple Class Name>__.fxml in the same package.
-As configured here, it is expected to find ```net/rgielen/fxweaver/samples/springboot/controller/MainController.fxml``` in ```src/main/resources```
-<2> In a JavaFX correctly instantiated controller class bound to an FXML view definition via ```fx:controller```, elements defined in FXML can be bound to controller fields annotated with ```@FXML```.
+As configured here, the declared expectation is to find  ```net/rgielen/fxweaver/samples/springboot/controller/MainController.fxml``` in ```src/main/resources```
+<2> In a correctly instantiated JavaFX controller class bound to an FXML view definition via ```fx:controller```, elements defined in FXML can be bound to controller fields annotated with ```@FXML```.
 Expect ```FxWeaver``` to take care of this.
 <3> This is also a Spring managed bean, so ```FxWeaver``` takes care that the JavaFX controller factory utilizes Spring for bean creation and management.
 
@@ -164,7 +163,10 @@ Also, let's look at the FXML view definition:
 <VBox xmlns:fx="http://javafx.com/fxml" spacing="10" alignment="CENTER"
       fx:controller="net.rgielen.fxweaver.samples.springboot.controller.MainController"> <!--1-->
 
+    <Label fx:id="label"/> <!--2-->
+
 </VBox>
 ----
 <1> Declare the controller class to be instantiated with the view.
 This is where ```FxWeaver``` is supposed to help, such that Spring is used for instantiation during FXML load mechanism.
+<2> A Label component that get's injected into the controller's ```label``` field based on the ```@FXML``` annotation and field name matching value in ```fx:id``` attribute.
