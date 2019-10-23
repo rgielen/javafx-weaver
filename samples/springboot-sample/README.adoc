@@ -189,7 +189,7 @@ Along the way, ```FXMLLoader``` will also take care of injecting ```@FXML``` ann
   * or both when using ```<V extends Node, C> FxControllerAndView<C, V> load(Class<C> controllerClass ...)``` methods.
   * Any ```IOException``` thrown during loading is wrapped in a more useful ```FxLoadException``` deriving from ```RuntimeException```
 
-=== Make the Controller responsible for showing the view
+=== Make the Controller responsible for showing the View
 
 By being able to obtain a controller instance with a weaved FXML view, a controller can easily be enhanced by a ```show()``` method that can be called from the outside.
 
@@ -197,7 +197,7 @@ By being able to obtain a controller instance with a weaved FXML view, a control
 [source,java]
 ----
 @Component
-@FxmlView // equal to: @FxmlView("MainController.fxml")
+@FxmlView
 public class MainController {
 
     private final FxWeaver fxWeaver;
@@ -258,3 +258,46 @@ public class DialogController {
 
 </VBox>
 ----
+
+=== Manipulating the View after loading
+
+By retrieving both the view and the controller from ```FxWeaver```, a view can be manipulated before requesting the controller to show it.
+
+.MainController
+[source,java]
+----
+@Component
+@FxmlView
+public class MainController {
+
+    private final FxWeaver fxWeaver;
+
+    @FXML
+    public Button openTiledDialogButton;
+
+    public MainController( FxWeaver fxWeaver) {
+        this.fxWeaver = fxWeaver;
+    }
+
+    @FXML
+    public void initialize() {
+        openTiledDialogButton.setOnAction(
+                actionEvent -> {
+                    FxControllerAndView<TiledDialogController, VBox> tiledDialog =
+                            fxWeaver.load(TiledDialogController.class);
+                    tiledDialog.getView().ifPresent(
+                            v -> {
+                                Label label = new Label();
+                                label.setText("Dynamically added Label");
+                                v.getChildren().add(label); //<1>
+                            }
+                    );
+                    tiledDialog.getController().show(); //<2>
+                }
+        );
+    }
+
+}
+----
+<1> Obtain the view, and if present, programmatically add a label to it
+<2> Use the controller show method to display the dialog
