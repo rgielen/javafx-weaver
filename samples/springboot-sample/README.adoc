@@ -189,3 +189,72 @@ Along the way, ```FXMLLoader``` will also take care of injecting ```@FXML``` ann
   * or both when using ```<V extends Node, C> FxControllerAndView<C, V> load(Class<C> controllerClass ...)``` methods.
   * Any ```IOException``` thrown during loading is wrapped in a more useful ```FxLoadException``` deriving from ```RuntimeException```
 
+=== Make the Controller responsible for showing the view
+
+By being able to obtain a controller instance with a weaved FXML view, a controller can easily be enhanced by a ```show()``` method that can be called from the outside.
+
+.MainController
+[source,java]
+----
+@Component
+@FxmlView // equal to: @FxmlView("MainController.fxml")
+public class MainController {
+
+    private final FxWeaver fxWeaver;
+
+    @FXML
+    public Button openSimpleDialogButton;
+
+    public MainController( FxWeaver fxWeaver) {
+        this.fxWeaver = fxWeaver;
+    }
+
+    @FXML
+    public void initialize() {
+        openSimpleDialogButton.setOnAction(
+                actionEvent -> fxWeaver.loadController(DialogController.class).show() //<1>
+        );
+    }
+
+}
+----
+<1> Obtain a controller instance weaved with its view and call the ```show()``` method
+
+.DialogController
+[source,java]
+----
+@FxmlView("SimpleDialog.fxml") //<1>
+@Component
+public class DialogController {
+
+    private Stage stage;
+
+    @FXML
+    VBox dialog;
+
+    @FXML
+    public void initialize() { //<2>
+        this.stage = new Stage();
+        stage.setScene(new Scene(dialog));
+    }
+
+    public void show() {
+        stage.show(); //<3>
+    }
+}
+----
+<1> Use a custom FXML resource
+<2> Initialize a new stage with the controller bean and create a scene containing the root node element of the given FXML view (VBox in this case)
+<3> Show the stage
+
+.SimpleDialog.fxml
+[source,xml]
+----
+<VBox fx:id="dialog" alignment="CENTER" prefHeight="200.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8.0.232-ea"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="net.rgielen.fxweaver.samples.springboot.controller.DialogController">
+
+    <Label text="Hello!"/>
+
+</VBox>
+----
