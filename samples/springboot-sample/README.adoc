@@ -31,3 +31,367 @@ Then add ```javafx-weaver-spring``` in the desired version:
     <version>${javafx-weaver.version}</version>
 </dependency>
 ----
+
+== Bootstrap
+
+The bootstrap process is heavily inspired by Mr. Awesome Josh Long's https://spring.io/blog/2019/01/16/spring-tips-javafx[Spring Tips: JavaFX] installment.
+
+The main class looks a bit different than usual:
+
+[source,java]
+----
+@SpringBootApplication
+public class JavafxWeaverSpringbootSampleApplication {
+
+    public static void main(String[] args) {
+        Application.launch(SpringbootJavaFxApplication.class, args); //<1>
+    }
+
+    @Bean
+    public FxWeaver fxWeaver(ConfigurableApplicationContext applicationContext) {
+        // Would also work with javafx-weaver-core only:
+        // return new FxWeaver(applicationContext::getBean, applicationContext::close);
+        return new SpringFxWeaver(applicationContext); //<2>
+    }
+
+}
+----
+<1> Instead of calling ```SpringBootApplication.run()```, use a custom boostrap class inheriting from JavaFX ```Application```. This is needed to initialize JavaFX correctly
+<2> Provide a ```FxWeaver``` bean for making weaving functionality accessible.
+Can be either a plain ```FxWeaver``` instance or a more convenient ```SpringFxWeaver```
+
+It is accompanied by the ```SpringbootJavaFxApplication``` which does the heavy lifting for creating a proper JavaFX application with initialized Spring context.
+The actual sample source is a little bit more elaborate, but essentially it boils down to:
+
+[source,java]
+----
+public class SpringbootJavaFxApplication extends Application {
+
+    private ConfigurableApplicationContext context;
+
+    @Override
+    public void init() throws Exception {
+        this.context = new SpringApplicationBuilder() //<1>
+                .sources(JavafxWeaverSpringbootSampleApplication.class)
+                .run(getParameters().getRaw().toArray(new String[0]));
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        context.publishEvent(new StageReadyEvent(primaryStage)); //<2>
+    }
+
+    @Override
+    public void stop() throws Exception { //<3>
+        this.context.close();
+        Platform.exit();
+    }
+}
+----
+<1> Programmatically create a Spring Boot context in the ```Application#init()``` method.
+<2> Kick off application logic by sending a ```StageReadyEvent``` containing the primary Stage as payload.
+<3> Support graceful shutdown for both Spring context and JavaFX platform
+
+== Using FxWeaver
+
+=== Create Main Window with a weaved View
+
+We are now ready to create our main application window (aka Scene), and it can be done within a Spring managed bean consuming the ```StageReadyEvent``` emitted earlier:
+
+[source,java]
+----
+@Component
+public class PrimaryStageInitializer implements ApplicationListener<StageReadyEvent> {
+
+    private final FxWeaver fxWeaver;
+
+    @Autowired
+    public PrimaryStageInitializer(FxWeaver fxWeaver) { //<1>
+        this.fxWeaver = fxWeaver;
+    }
+
+    @Override
+    public void onApplicationEvent(StageReadyEvent event) { //<2>
+        Stage stage = event.stage;
+        Scene scene = new Scene(fxWeaver.loadView(MainController.class), 400, 300); //<3>
+        stage.setScene(scene);
+        stage.show();
+    }
+}
+----
+<1> Use constructor injection to get a ```FxWeaver``` reference
+<2> Consume ```StageReadyEvent```, which contains the applications primary stage as payload
+<3> Use ```FxWeaver``` to obtain a ```View``` based on the ```@FxmlView``` annotation found in ```MainController```
+
+Here is where we see ```FxWeaver``` in action for the first time.
+To get the full picture, we need have a look at the important parts of ```MainController``` as well:
+
+[source,java]
+----
+package net.rgielen.fxweaver.samples.springboot.controller;
+
+@Component
+@FxmlView // equal to: @FxmlView("MainController.fxml") //<1>
+public class MainController {
+
+    private final String greeting;
+
+    @FXML //<2>
+    public Label label;
+
+    // ...
+
+    public MainController(@Value("${spring.application.demo.greeting}") String greeting) { //<3>
+        this.greeting = greeting;
+    }
+
+    // ...
+}
+----
+<1> Declare that a FXML view belongs to this class.
+If no value provided, infer it to be __<Simple Class Name>__.fxml in the same package.
+As configured here, the declared expectation is to find  ```net/rgielen/fxweaver/samples/springboot/controller/MainController.fxml``` in ```src/main/resources```
+<2> In a correctly instantiated JavaFX controller class bound to an FXML view definition via ```fx:controller```, elements defined in FXML can be bound to controller fields annotated with ```@FXML```.
+Expect ```FxWeaver``` to take care of this.
+<3> This is also a Spring managed bean, so ```FxWeaver``` takes care that the JavaFX controller factory utilizes Spring for bean creation and management.
+
+Also, let's look at the FXML view definition:
+
+.MainController.fxml
+[source, xml]
+----
+<VBox xmlns:fx="http://javafx.com/fxml" spacing="10" alignment="CENTER"
+      fx:controller="net.rgielen.fxweaver.samples.springboot.controller.MainController"> <!--1-->
+
+    <Label fx:id="label"/> <!--2-->
+
+</VBox>
+----
+<1> Declare the controller class to be instantiated with the view.
+This is where ```FxWeaver``` is supposed to help, such that Spring is used for instantiation during FXML load mechanism.
+<2> A Label component that get's injected into the controller's ```label``` field based on the ```@FXML``` annotation and field name matching value in ```fx:id``` attribute.
+
+=== What FxWeaver actually does
+
+When calling one of the ```FxWeaver``` ```load*``` methods supplying a controller class, ```FxWeaver``` does the following:
+
+. Introspect controller class for existence of ```@FxmlView``` annotation
+. Infer the FXML resource location by either taking the exact name provided as ```@FxmlView``` value attribute or by using the simple classname plus ```.fxml``` suffix.
+If not referencing an absolute path within the classpath, it is assumed that the resource is located in the same package as the controller class
+. Construct a ```FXMLLoader``` and set the ```ResourceBundle```, if provided, and the controller factory.
+The controller factory used will be the bean creation function provided to the ```FxWeaver``` constructor.
+In case of Spring, this is ```applicationContext::getBean```
+. Let ```FXMLLoader``` load the FXML view resource, and once it contains a ```fx:controller``` attribute, let it instantiate the controller instance by using the provided controller factory.
+Along the way, ```FXMLLoader``` will also take care of injecting ```@FXML``` annotated fields.
+. Return either
+  * the controller instance when using ```<C> C loadController(Class<C> controllerClass ...)``` methods
+  * the view instance when using ```<V extends Node, C> V loadView(Class<C> controllerClass ...)``` methods
+  * or both when using ```<V extends Node, C> FxControllerAndView<C, V> load(Class<C> controllerClass ...)``` methods.
+  * Any ```IOException``` thrown during loading is wrapped in a more useful ```FxLoadException``` deriving from ```RuntimeException```
+
+=== Make the Controller responsible for showing the View
+
+By being able to obtain a controller instance with a weaved FXML view, a controller can easily be enhanced by a ```show()``` method that can be called from the outside.
+
+.MainController
+[source,java]
+----
+@Component
+@FxmlView
+public class MainController {
+
+    private final FxWeaver fxWeaver;
+
+    @FXML
+    public Button openSimpleDialogButton;
+
+    public MainController( FxWeaver fxWeaver) {
+        this.fxWeaver = fxWeaver;
+    }
+
+    @FXML
+    public void initialize() {
+        openSimpleDialogButton.setOnAction(
+                actionEvent -> fxWeaver.loadController(DialogController.class).show() //<1>
+        );
+    }
+
+}
+----
+<1> Obtain a controller instance weaved with its view and call the ```show()``` method
+
+.DialogController
+[source,java]
+----
+@FxmlView("SimpleDialog.fxml") //<1>
+@Component
+public class DialogController {
+
+    private Stage stage;
+
+    @FXML
+    VBox dialog;
+
+    @FXML
+    public void initialize() { //<2>
+        this.stage = new Stage();
+        stage.setScene(new Scene(dialog));
+    }
+
+    public void show() {
+        stage.show(); //<3>
+    }
+}
+----
+<1> Use a custom FXML resource
+<2> Initialize a new stage with the controller bean and create a scene containing the root node element of the given FXML view (VBox in this case)
+<3> Show the stage
+
+.SimpleDialog.fxml
+[source,xml]
+----
+<VBox fx:id="dialog" alignment="CENTER" prefHeight="200.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8.0.232-ea"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="net.rgielen.fxweaver.samples.springboot.controller.DialogController">
+
+    <Label text="Hello!"/>
+
+</VBox>
+----
+
+=== Manipulating the View after loading
+
+By retrieving both the view and the controller from ```FxWeaver```, a view can be manipulated before requesting the controller to show it.
+
+.MainController
+[source,java]
+----
+@Component
+@FxmlView
+public class MainController {
+
+    private final FxWeaver fxWeaver;
+
+    @FXML
+    public Button openTiledDialogButton;
+
+    public MainController( FxWeaver fxWeaver) {
+        this.fxWeaver = fxWeaver;
+    }
+
+    @FXML
+    public void initialize() {
+        openTiledDialogButton.setOnAction(
+                actionEvent -> {
+                    FxControllerAndView<TiledDialogController, VBox> tiledDialog =
+                            fxWeaver.load(TiledDialogController.class);
+                    tiledDialog.getView().ifPresent(
+                            v -> {
+                                Label label = new Label();
+                                label.setText("Dynamically added Label");
+                                v.getChildren().add(label); //<1>
+                            }
+                    );
+                    tiledDialog.getController().show(); //<2>
+                }
+        );
+    }
+
+}
+----
+<1> Obtain the view, and if present, programmatically add a label to it
+<2> Use the controller show method to display the dialog
+
+=== Tiled Views, (re-)using independent Components
+
+FXML's ```fx:include``` mechanism is fully supported in ```FxWeaver```.
+View tiles can have independent controllers are correctly managed and injected by both Spring and ```FXMLLoader```.
+https://gluonhq.com/products/scene-builder/[SceneBuilder] is fully supported.
+
+.TiledDialogController.java
+[source,java]
+----
+@Component
+public class TiledDialogController {
+
+    private Stage stage;
+
+    @FXML
+    private VBox dialog;
+    @FXML
+    public Button closeButton;
+
+
+    @FXML
+    public void initialize() {
+        this.stage = new Stage();
+        stage.setScene(new Scene(dialog)); //<1>
+    }
+
+    public void show() {
+        stage.show();
+        closeButton.setOnAction(
+                a -> stage.close()
+        );
+    }
+
+}
+----
+<1> Create and use the "master view" as usual
+
+.TiledDialogController.fxml
+[source,xml]
+----
+<VBox fx:id="dialog" alignment="CENTER" prefHeight="200.0" prefWidth="200.0" spacing="10"
+      xmlns="http://javafx.com/javafx/8.0.232-ea"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="net.rgielen.fxweaver.samples.springboot.controller.TiledDialogController">
+
+    <fx:include source="tiles/SimpleTileController.fxml"/> <!--1-->
+    <Button fx:id="closeButton" mnemonicParsing="false" text="Close"/>
+
+</VBox>
+----
+<1> Use ```fx:include``` to embed another view defined using FXML
+
+.SimpleTileController.fxml
+[source,xml]
+----
+<VBox alignment="CENTER" xmlns="http://javafx.com/javafx/8.0.232-ea"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="net.rgielen.fxweaver.samples.springboot.controller.tiles.SimpleTileController" <!--1-->
+      style="-fx-background-color: #ffffff">
+
+    <Label fx:id="label" text="A Simple Tile"/>
+    <Button text="Do nothing"/>
+
+</VBox>
+----
+<1> The view tile declares its own controller bean, which gets instantiated and managed correctly and automatically
+
+[source,java]
+----
+@FxmlView
+@Component //<1>
+public class SimpleTileController {
+
+    @FXML
+    Label label;
+
+    @FXML
+    public void initialize() {
+        label.setText(label.getText() + " initialized");
+    }
+
+}
+----
+<1> The weaved controller instance will be a fully managed Spring bean
+
+If used like this, view tiles can also be re-used, even as standalone views.
+
+== Contributing
+
+Feel free to open issues and pull requests on GitHub.
+This is a side project of mine, so please don't expect enterprise grade support.
+
+You can find me on Twitter as well: https://twitter.com/rgielen[@rgielen]
