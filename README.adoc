@@ -5,6 +5,11 @@ image:https://api.travis-ci.org/rgielen/javafx-weaver.svg[Build Status,link=http
 
 *An opinionated view on how to do dependency injection and FXML view handling in JavaFX.*
 
+Read more:
+
+* https://rgielen.net/posts/2019/introducing-fxweaver-dependency-injection-support-for-javafx-and-fxml/[Introducing FxWeaver - Dependency Injection Support for JavaFX and FXML]
+* https://rgielen.net/posts/2019/creating-a-spring-boot-javafx-application-with-fxweaver/[Creating a Spring Boot JavaFX Application with FxWeaver]
+
 Features:
 
 * Supportive tooling for using JavaFX together with dependency injection frameworks such as Spring or CDI
