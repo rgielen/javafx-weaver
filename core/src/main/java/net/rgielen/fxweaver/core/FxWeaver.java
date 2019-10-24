@@ -311,7 +311,7 @@ public class FxWeaver {
      * @param controllerClass The controller class of which a weaved instance should be provided
      * @param <V>             The view type
      * @param <C>             The controller type
-     * @return A {@link FxControllerAndView} container with the managed instance of the requested controller and the
+     * @return A {@link SimpleFxControllerAndView} container with the managed instance of the requested controller and the
      * corresponding view, if applicable
      * @see #FxWeaver(Callback, Runnable)
      * @see FXMLLoader
@@ -337,7 +337,7 @@ public class FxWeaver {
      * @param resourceBundle  The optional {@link ResourceBundle} to use for view creation. May be <tt>null</tt>
      * @param <V>             The view type
      * @param <C>             The controller type
-     * @return A {@link FxControllerAndView} container with the managed instance of the requested controller and the
+     * @return A {@link SimpleFxControllerAndView} container with the managed instance of the requested controller and the
      * corresponding view, if applicable
      * @see #FxWeaver(Callback, Runnable)
      * @see FXMLLoader
@@ -367,7 +367,7 @@ public class FxWeaver {
      * @param resourceBundle  The optional {@link ResourceBundle} to use for view creation. May be <tt>null</tt>
      * @param <V>             The view type
      * @param <C>             The controller type
-     * @return A {@link FxControllerAndView} container with the managed instance of the requested controller and the
+     * @return A {@link SimpleFxControllerAndView} container with the managed instance of the requested controller and the
      * corresponding view, if applicable
      * @see #FxWeaver(Callback, Runnable)
      * @see FXMLLoader
@@ -378,7 +378,7 @@ public class FxWeaver {
         return Optional.ofNullable(location)
                 .map(controllerClass::getResource)
                 .map(url -> this.<V, C>loadByView(url, resourceBundle))
-                .orElseGet(() -> FxControllerAndView.ofController(getBean(controllerClass)));
+                .orElseGet(() -> SimpleFxControllerAndView.ofController(getBean(controllerClass)));
     }
 
     private <V extends Node, C> FxControllerAndView<C, V> loadByView(URL url, ResourceBundle resourceBundle) {
@@ -395,7 +395,7 @@ public class FxWeaver {
                 loader.setResources(resourceBundle);
             }
             V view = loader.load(fxmlStream);
-            return FxControllerAndView.of(loader.getController(), view);
+            return SimpleFxControllerAndView.of(loader.getController(), view);
         } catch (IOException e) {
             throw new FxLoadException("Unable to load FXML file " + url, e);
         }
