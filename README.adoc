@@ -13,16 +13,20 @@ Read more:
 Features:
 
 * Supportive tooling for using JavaFX together with dependency injection frameworks such as Spring or CDI
-* Declarative FXML view binding - Create a controller class and annotate it with ```@FxmlView``` and let ```FxWeaver``` handle view loading and instantiating
-* Support for ```fx:controller``` attribute in FXML, with controller classes being instantiated, autowired and fully managed by your DI framework of choice
-* Acquire managed controller instances with automatically weaved FXML views
-* Support for tiling / componentisation: Create view components with independent controllers and aggregate them in other views using ```fx:include```, again with full DI support
+* https://github.com/rgielen/javafx-weaver/tree/master/samples/springboot-sample#maincontroller-fxmlview-example[Declarative FXML view binding] - Create a controller class and annotate it with ```@FxmlView``` and let ```FxWeaver``` handle view loading and instantiating
+* https://github.com/rgielen/javafx-weaver/tree/master/samples/springboot-sample#main-controller-fxml[Support for ```fx:controller``` attribute in FXML], with controller classes being instantiated, autowired and fully managed by your DI framework of choice
+* https://github.com/rgielen/javafx-weaver/tree/master/samples/springboot-sample#main-controller-loading-example[Acquire managed controller instances] with automatically weaved FXML views
+* https://github.com/rgielen/javafx-weaver/tree/master/samples/springboot-sample#springfxweaver-directly-inject-a-fxcontrollerandview-reference[Support for tiling / componentisation]: Create view components with independent controllers and aggregate them in other views using ```fx:include```, again with full DI support
 * https://gluonhq.com/products/scene-builder/[SceneBuilder] fully supported, even when creating and using view tiles
+* Spring  and Spring Boot specific:
+** https://github.com/rgielen/javafx-weaver/tree/master/samples/springboot-sample#springfxweaver-directly-inject-a-fxcontrollerandview-reference[Support for direct injection] of ```FxControllerAndView``` instances based on generic types
+** https://github.com/rgielen/javafx-weaver/tree/master/samples/springboot-sample#spring-boot-starter[Spring Boot Starter] including auto-configuration
 
 === Getting Started
 
-Add ```javafx-weaver-core``` as a dependency to your project, e.g. with Maven:
+Add ```javafx-weaver-core``` as a dependency to your project.
 
+with Maven:
 [source,xml]
 ----
 <dependency>
@@ -31,6 +35,14 @@ Add ```javafx-weaver-core``` as a dependency to your project, e.g. with Maven:
     <version>1.3.0</version>
 </dependency>
 ----
+
+with Gradle:
+[source,groovy]
+----
+implementation 'javafx-weaver-spring-boot-starter:1.3.0'
+----
+
+Dedicated Spring and Spring Boot support is also available, including a https://github.com/rgielen/javafx-weaver/tree/master/samples/springboot-sample#spring-boot-starter[Spring Boot Starter].
 
 === Using FxWeaver
 
