@@ -269,7 +269,7 @@ To use this feature, a suitable bean factory method has to be provided:
 [source,java]
 ----
 @Bean
-@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE) //<1>
 public <C, V extends Node> FxControllerAndView<C, V> controllerAndView(FxWeaver fxWeaver,
                                                                        InjectionPoint injectionPoint) {
     return new InjectionPointLazyFxControllerAndViewResolver(fxWeaver)
@@ -277,6 +277,7 @@ public <C, V extends Node> FxControllerAndView<C, V> controllerAndView(FxWeaver 
 }
 
 ----
+<1> For the inspection of the injection point to work for _each_ injection point, the bean definition *must be protopye scoped*.
 
 Based on the injection point definition, generic types will be resolved to actual types to be used for the actual weaving. A ```LazyFxControllerAndView``` instance will be provisioned, to do the actual FXML loading and weaving on the GUI thread. Please note that ```InjectionPointLazyFxControllerAndViewResolver``` is a class name in the best tradition of long but expressive identifiers in the Spring Framework ;)
 
