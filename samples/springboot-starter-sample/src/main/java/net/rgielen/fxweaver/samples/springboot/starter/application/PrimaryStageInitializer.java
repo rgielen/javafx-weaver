@@ -4,6 +4,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import net.rgielen.fxweaver.core.FxWeaver;
 import net.rgielen.fxweaver.samples.springboot.starter.controller.MainWindow;
+import net.rgielen.fxweaver.spring.StageReadyEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
@@ -23,7 +24,7 @@ public class PrimaryStageInitializer implements ApplicationListener<StageReadyEv
 
     @Override
     public void onApplicationEvent(StageReadyEvent event) {
-        Stage stage = event.stage;
+        Stage stage = event.getStage();
         Scene scene = new Scene(fxWeaver.loadView(MainWindow.class), 400, 300);
         stage.setScene(scene);
         stage.show();

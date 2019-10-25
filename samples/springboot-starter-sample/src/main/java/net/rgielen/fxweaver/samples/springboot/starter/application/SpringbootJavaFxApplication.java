@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import net.rgielen.fxweaver.samples.springboot.starter.FxWeaverSpringBootStarterSampleApplication;
+import net.rgielen.fxweaver.spring.StageReadyEvent;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 
