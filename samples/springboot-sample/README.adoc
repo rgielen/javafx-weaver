@@ -1,5 +1,6 @@
 :toc:
 :toc-placement!:
+:sectanchors:
 ifndef::env-github[]
 :icons: font
 endif::[]
@@ -19,19 +20,61 @@ toc::[]
 
 == Setup
 
-Create a simple Spring Boot Maven project.
+=== Manual setup
+
+Create a simple Spring Boot project.
 Add JavaFX dependencies as required.
 
 Then add ```javafx-weaver-spring``` in the desired version:
+
+For Maven:
 [source,xml]
 ----
 <dependency>
     <groupId>net.rgielen</groupId>
     <artifactId>javafx-weaver-spring</artifactId>
-    <version>${javafx-weaver.version}</version>
+    <version>1.3.0</version>
 </dependency>
 ----
 
+For Gradle:
+[source,groovy]
+----
+implementation 'net.rgielen:javafx-weaver-spring:1.3.0'
+----
+
+[#spring-boot-starter]
+=== Spring Boot Starter
+
+Since version 1.3.0, a Spring Boot Starter is available.
+It introduces the ```javafx-weaver-spring``` dependency as well as an autoconfiguration module.
+To use it, include the ```javafx-weaver-spring-boot-starter``` dependency.
+
+For Maven:
+[source,xml]
+----
+<dependency>
+    <groupId>net.rgielen</groupId>
+    <artifactId>javafx-weaver-spring-boot-starter</artifactId>
+    <version>1.3.0</version>
+</dependency>
+----
+
+For Gradle:
+[source,groovy]
+----
+implementation 'javafx-weaver-spring-boot-starter:1.3.0'
+----
+
+If using the the starter, it is not necessary to provide a ```FxWeaver``` bean as described in <<fxweaver-provisioning, the FxWeaver bean provisioning example>>, unless you want to customize it further.
+Auto-configuration takes care of configuring a suitable ```FxWeaver``` instance.
+
+Same goes with direct injection factory bean for ```FxControllerAndView``` references as described in the <<direct-injection-factory-example, direct injection configuration example>>.
+The starter provides auto-configuration for such a factory, such that ```FxControllerAndView``` injection can be <<direct-injection-usage-example,used out of the box>>.
+
+Check out the https://github.com/rgielen/javafx-weaver/tree/master/samples/springboot-starter-sample[dedicated example] using the Spring Boot Starter and a reduced setup in general.
+
+[#bootstrap]
 == Bootstrap
 
 The bootstrap process is heavily inspired by Mr. Awesome Josh Long's https://spring.io/blog/2019/01/16/spring-tips-javafx[Spring Tips: JavaFX] installment.
@@ -56,13 +99,14 @@ public class JavafxWeaverSpringbootSampleApplication {
 
 }
 ----
-<1> Instead of calling ```SpringBootApplication.run()```, use a custom boostrap class inheriting from JavaFX ```Application```. This is needed to initialize JavaFX correctly
-<2> Provide a ```FxWeaver``` bean for making weaving functionality accessible.
-Can be either a plain ```FxWeaver``` instance or a more convenient ```SpringFxWeaver```
+<1> Instead of calling ```SpringBootApplication.run()```, use a <<application-bootstrap-class,custom bootstrap class>> inheriting from JavaFX ```Application```. This is needed to initialize JavaFX correctly
+<2> [[fxweaver-provisioning]]Provide a ```FxWeaver``` bean for making weaving functionality accessible.
+Can be either a plain ```FxWeaver``` instance or a more convenient ```SpringFxWeaver```.  This is not needed when using the <<spring-boot-starter>> , since it provides auto-configuration for a ```FxWeaver``` instance.
 
 It is accompanied by the ```SpringbootJavaFxApplication``` which does the heavy lifting for creating a proper JavaFX application with initialized Spring context.
 The actual sample source is a little bit more elaborate, but essentially it boils down to:
 
+[[application-bootstrap-class]]
 [source,java]
 ----
 public class SpringbootJavaFxApplication extends Application {
@@ -96,7 +140,7 @@ public class SpringbootJavaFxApplication extends Application {
 
 === Create Main Window with a weaved View
 
-We are now ready to create our main application window (aka Scene), and it can be done within a Spring managed bean consuming the ```StageReadyEvent``` emitted earlier:
+We are now ready to fill and show our main application window (aka Stage), and it can be done within a Spring managed bean consuming the ```StageReadyEvent``` emitted earlier:
 
 [source,java]
 ----
@@ -148,7 +192,7 @@ public class MainController {
     // ...
 }
 ----
-<1> Declare that a FXML view belongs to this class.
+<1> Declare that a <<main-controller-fxml,FXML view>> belongs to this class.
 If no value provided, infer it to be __<Simple Class Name>__.fxml in the same package.
 As configured here, the declared expectation is to find  ```net/rgielen/fxweaver/samples/springboot/controller/MainController.fxml``` in ```src/main/resources```
 <2> In a correctly instantiated JavaFX controller class bound to an FXML view definition via ```fx:controller```, elements defined in FXML can be bound to controller fields annotated with ```@FXML```.
@@ -157,6 +201,7 @@ Expect ```FxWeaver``` to take care of this.
 
 Also, let's look at the FXML view definition:
 
+[[main-controller-fxml]]
 .MainController.fxml
 [source, xml]
 ----
@@ -263,8 +308,9 @@ public class DialogController {
 
 From 1.3.0 on ```javafx-weaver-spring``` supports direct injection for ```FxControllerAndView``` references, based on their generic typing.
 
-To use this feature, a suitable bean factory method has to be provided:
+To use this feature, a suitable bean factory method has to be provided. This can be done by using the <<spring-boot-starter>> which provides auto-configuration for such a bean, or by proving it manually as follows:
 
+[[direct-injection-factory-example]]
 .JavafxWeaverSpringbootSampleApplication.java
 [source,java]
 ----
@@ -283,6 +329,7 @@ Based on the injection point definition, generic types will be resolved to actua
 
 Given that, a component consuming a ```FxControllerAndView``` may be defined like this:
 
+[[direct-injection-usage-example]]
 .DialogController.java
 [source,java]
 ----
@@ -372,7 +419,7 @@ public class MainController {
 === Tiled Views, (re-)using independent Components
 
 FXML's ```fx:include``` mechanism is fully supported in ```FxWeaver```.
-View tiles can have independent controllers are correctly managed and injected by both Spring and ```FXMLLoader```.
+View tiles can have independent controllers that are correctly managed and injected by both Spring and ```FXMLLoader```.
 https://gluonhq.com/products/scene-builder/[SceneBuilder] is fully supported.
 
 .TiledDialogController.java
@@ -436,6 +483,7 @@ public class TiledDialogController {
 ----
 <1> The view tile declares its own controller bean, which gets instantiated and managed correctly and automatically
 
+.SimpleTileController.java
 [source,java]
 ----
 @FxmlView
