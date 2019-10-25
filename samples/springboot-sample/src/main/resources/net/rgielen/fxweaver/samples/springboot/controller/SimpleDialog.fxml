@@ -7,6 +7,7 @@
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="net.rgielen.fxweaver.samples.springboot.controller.DialogController">
 
-    <Button fx:id="closeButton" mnemonicParsing="false" onAction="#click" text="Close"/>
+    <Button fx:id="openAnotherDialogButton" mnemonicParsing="false" text="Open another Dialog"/>
+    <Button fx:id="closeButton" mnemonicParsing="false" text="Close"/>
 
 </VBox>
