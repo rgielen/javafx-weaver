@@ -240,7 +240,8 @@ Along the way, ```FXMLLoader``` will also take care of injecting ```@FXML``` ann
 
 By being able to obtain a controller instance with a weaved FXML view, a controller can easily be enhanced by a ```show()``` method that can be called from the outside.
 
-.MainController
+[[main-controller-loading-example]]
+.MainController.java
 [source,java]
 ----
 @Component
@@ -267,7 +268,7 @@ public class MainController {
 ----
 <1> Obtain a controller instance weaved with its view and call the ```show()``` method
 
-.DialogController
+.DialogController.java
 [source,java]
 ----
 @FxmlView("SimpleDialog.fxml") //<1>
