@@ -203,7 +203,7 @@ public class MainController {
     private final FxWeaver fxWeaver;
 
     @FXML
-    public Button openSimpleDialogButton;
+    private Button openSimpleDialogButton;
 
     public MainController( FxWeaver fxWeaver) {
         this.fxWeaver = fxWeaver;
@@ -230,7 +230,7 @@ public class DialogController {
     private Stage stage;
 
     @FXML
-    VBox dialog;
+    private VBox dialog;
 
     @FXML
     public void initialize() { //<2>
@@ -259,6 +259,72 @@ public class DialogController {
 </VBox>
 ----
 
+=== SpringFxWeaver: Directly Inject a ```FxControllerAndView``` Reference
+
+From 1.3.0 on ```javafx-weaver-spring``` supports direct injection for ```FxControllerAndView``` references, based on their generic typing.
+
+To use this feature, a suitable bean factory method has to be provided:
+
+.JavafxWeaverSpringbootSampleApplication.java
+[source,java]
+----
+@Bean
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+public <C, V extends Node> FxControllerAndView<C, V> controllerAndView(FxWeaver fxWeaver,
+                                                                       InjectionPoint injectionPoint) {
+    return new InjectionPointLazyFxControllerAndViewResolver(fxWeaver)
+            .resolve(injectionPoint);
+}
+
+----
+
+Based on the injection point definition, generic types will be resolved to actual types to be used for the actual weaving. A ```LazyFxControllerAndView``` instance will be provisioned, to do the actual FXML loading and weaving on the GUI thread. Please note that ```InjectionPointLazyFxControllerAndViewResolver``` is a class name in the best tradition of long but expressive identifiers in the Spring Framework ;)
+
+Given that, a component consuming a ```FxControllerAndView``` may be defined like this:
+
+.DialogController.java
+[source,java]
+----
+@Component
+@FxmlView
+public class DialogController {
+
+    private Stage stage;
+
+    @FXML
+    private Button openAnotherDialogButton;
+    @FXML
+    private VBox dialog;
+
+    private final FxControllerAndView<AnotherDialog, VBox> anotherControllerAndView; //<1>
+
+    public DialogController(FxControllerAndView<AnotherDialog, VBox> anotherControllerAndView) { //<2>
+        this.anotherControllerAndView = anotherControllerAndView;
+    }
+
+    @FXML
+    public void initialize() {
+        this.stage = new Stage();
+        stage.setScene(new Scene(dialog));
+
+        openAnotherDialogButton.setOnAction(
+                actionEvent -> anotherControllerAndView.getController().show() //<3>
+        );
+    }
+
+    public void show() {
+        stage.show();
+    }
+
+}
+----
+<1> Operate directly on a ```FxControllerAndView``` instance rather than an injected ```FxWeaver``` instance
+<2> Use constructor based injection based on the generic types of the ```FxControllerAndView``` contructor parameter
+<3> Directly use the ```FxControllerAndView``` reference to show the dialog. The actual FXML loading and weaving is done now on the GUI thread, since the reference is actually a ```LazyFxControllerAndView```.
+
+Your IDE might tell you otherwise, but the actual injection based on generic types does work.
+This pattern might be helpful to enhance testability.
+
 === Manipulating the View after loading
 
 By retrieving both the view and the controller from ```FxWeaver```, a view can be manipulated before requesting the controller to show it.
@@ -273,7 +339,7 @@ public class MainController {
     private final FxWeaver fxWeaver;
 
     @FXML
-    public Button openTiledDialogButton;
+    private Button openTiledDialogButton;
 
     public MainController( FxWeaver fxWeaver) {
         this.fxWeaver = fxWeaver;
@@ -319,7 +385,7 @@ public class TiledDialogController {
     @FXML
     private VBox dialog;
     @FXML
-    public Button closeButton;
+    private Button closeButton;
 
 
     @FXML
@@ -376,7 +442,7 @@ public class TiledDialogController {
 public class SimpleTileController {
 
     @FXML
-    Label label;
+    private Label label;
 
     @FXML
     public void initialize() {

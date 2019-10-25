@@ -16,6 +16,7 @@ public class MainController {
 
     private final String greeting;
     private final FxWeaver fxWeaver;
+    private final FxControllerAndView<DialogController, VBox> dialog;
 
     @FXML
     public Label label;
@@ -27,9 +28,11 @@ public class MainController {
     public Button openTiledDialogButton;
 
     public MainController(@Value("${spring.application.demo.greeting}") String greeting,
-                          FxWeaver fxWeaver) {
+                          FxWeaver fxWeaver,
+                          FxControllerAndView<DialogController, VBox> dialog) {
         this.greeting = greeting;
         this.fxWeaver = fxWeaver;
+        this.dialog = dialog;
     }
 
     @FXML
@@ -37,9 +40,15 @@ public class MainController {
         helloButton.setOnAction(
                 actionEvent -> this.label.setText(greeting)
         );
+/*
         openSimpleDialogButton.setOnAction(
                 actionEvent -> fxWeaver.loadController(DialogController.class).show()
         );
+*/
+        openSimpleDialogButton.setOnAction(
+                actionEvent -> dialog.getController().show()
+        );
+
         openTiledDialogButton.setOnAction(
                 actionEvent -> {
                     FxControllerAndView<TiledDialogController, VBox> tiledDialog =
