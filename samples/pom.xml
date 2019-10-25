@@ -13,6 +13,7 @@
 
     <modules>
         <module>springboot-sample</module>
+        <module>springboot-starter-sample</module>
     </modules>
 
 </project>
