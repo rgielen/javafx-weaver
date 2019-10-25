@@ -4,7 +4,7 @@
 	<parent>
         <groupId>net.rgielen</groupId>
         <artifactId>javafx-weaver-samples</artifactId>
-        <version>1.3.0-SNAPSHOT</version>
+        <version>1.3.0</version>
 	</parent>
 	<artifactId>javafx-weaver-springboot-sample</artifactId>
 	<name>javafx-weaver-springboot-sample</name>
