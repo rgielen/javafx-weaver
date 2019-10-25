@@ -90,7 +90,7 @@ public class FxWeaver {
      * @see #FxWeaver(Callback, Runnable)
      * @see FXMLLoader
      */
-    public <V extends Node, C> V loadView(Class<C> controllerClass) {
+    public <C, V extends Node> V loadView(Class<C> controllerClass) {
         return loadView(controllerClass, (ResourceBundle) null);
     }
 
@@ -121,7 +121,7 @@ public class FxWeaver {
      * @see #FxWeaver(Callback, Runnable)
      * @see FXMLLoader
      */
-    public <V extends Node, C> V loadView(Class<C> controllerClass, ResourceBundle resourceBundle) {
+    public <C, V extends Node> V loadView(Class<C> controllerClass, ResourceBundle resourceBundle) {
         return loadView(controllerClass, buildFxmlReference(controllerClass), resourceBundle);
     }
 
@@ -151,7 +151,7 @@ public class FxWeaver {
      * @see #FxWeaver(Callback, Runnable)
      * @see FXMLLoader
      */
-    public <V extends Node, C> V loadView(Class<C> controllerClass, String location) {
+    public <C, V extends Node> V loadView(Class<C> controllerClass, String location) {
         return loadView(controllerClass, location, null);
     }
 
@@ -180,8 +180,8 @@ public class FxWeaver {
      * @see #FxWeaver(Callback, Runnable)
      * @see FXMLLoader
      */
-    public <V extends Node, C> V loadView(Class<C> controllerClass, String location, ResourceBundle resourceBundle) {
-        return this.<V, C>load(controllerClass, location, resourceBundle)
+    public <C, V extends Node> V loadView(Class<C> controllerClass, String location, ResourceBundle resourceBundle) {
+        return this.<C, V>load(controllerClass, location, resourceBundle)
                 .getView()
                 .orElse(null);
     }
@@ -316,7 +316,7 @@ public class FxWeaver {
      * @see #FxWeaver(Callback, Runnable)
      * @see FXMLLoader
      */
-    public <V extends Node, C> FxControllerAndView<C, V> load(Class<C> controllerClass) {
+    public <C, V extends Node> FxControllerAndView<C, V> load(Class<C> controllerClass) {
         return load(controllerClass, null);
     }
 
@@ -342,7 +342,7 @@ public class FxWeaver {
      * @see #FxWeaver(Callback, Runnable)
      * @see FXMLLoader
      */
-    public <V extends Node, C> FxControllerAndView<C, V> load(Class<C> controllerClass,
+    public <C, V extends Node> FxControllerAndView<C, V> load(Class<C> controllerClass,
                                                               ResourceBundle resourceBundle) {
         return load(controllerClass, buildFxmlReference(controllerClass), resourceBundle);
     }
@@ -372,20 +372,20 @@ public class FxWeaver {
      * @see #FxWeaver(Callback, Runnable)
      * @see FXMLLoader
      */
-    protected <V extends Node, C> FxControllerAndView<C, V> load(Class<C> controllerClass,
+    protected <C, V extends Node> FxControllerAndView<C, V> load(Class<C> controllerClass,
                                                                  String location,
                                                                  ResourceBundle resourceBundle) {
         return Optional.ofNullable(location)
                 .map(controllerClass::getResource)
-                .map(url -> this.<V, C>loadByView(url, resourceBundle))
+                .map(url -> this.<C, V>loadByView(url, resourceBundle))
                 .orElseGet(() -> SimpleFxControllerAndView.ofController(getBean(controllerClass)));
     }
 
-    private <V extends Node, C> FxControllerAndView<C, V> loadByView(URL url, ResourceBundle resourceBundle) {
+    private <C, V extends Node> FxControllerAndView<C, V> loadByView(URL url, ResourceBundle resourceBundle) {
         return loadByViewUsingFxmlLoader(new FXMLLoader(), url, resourceBundle);
     }
 
-    <V extends Node, C> FxControllerAndView<C, V> loadByViewUsingFxmlLoader(FXMLLoader loader, URL url,
+    <C, V extends Node> FxControllerAndView<C, V> loadByViewUsingFxmlLoader(FXMLLoader loader, URL url,
                                                                             ResourceBundle resourceBundle) {
         try (InputStream fxmlStream = url.openStream()) {
             LOG.debug("Loading FXML resource at {}", url);
