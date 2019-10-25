@@ -170,6 +170,8 @@ public class PrimaryStageInitializer implements ApplicationListener<StageReadyEv
 Here is where we see ```FxWeaver``` in action for the first time.
 To get the full picture, we need have a look at the important parts of ```MainController``` as well:
 
+[[maincontroller-fxmlview-example]]
+.MainController.java
 [source,java]
 ----
 package net.rgielen.fxweaver.samples.springboot.controller;
