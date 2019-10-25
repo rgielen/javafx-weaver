@@ -9,7 +9,7 @@ import java.util.function.Supplier;
  * A {@link FxControllerAndView} implementation that takes a supplier to lazily load the actual view and controller
  * when being on the JavaFX {@link javafx.application.Application} thread, which is not the case during constructor
  * injection.
- *
+ * <p/>
  * The implementation is <tt>NOT</tt> threadsafe, since JavaFX GUI is supposed to work single threaded.
  *
  * @author <a href="mailto:rene.gielen@gmail.com">Rene Gielen</a>
@@ -42,6 +42,8 @@ public class LazyFxControllerAndView<C, V extends Node> implements FxControllerA
 
     /**
      * Non-threadsafe lazy loader implementation.
+     * <p/>
+     * If thread safety is really required, a derived class may override this method to provide a threadsafe variant.
      *
      * @noinspection WeakerAccess
      * */
