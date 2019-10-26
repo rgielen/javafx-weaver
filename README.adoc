@@ -5,7 +5,7 @@ image:https://api.travis-ci.org/rgielen/javafx-weaver.svg[Build Status,link=http
 
 *An opinionated view on how to do dependency injection and FXML view handling in JavaFX.*
 
-Read more:
+Complementary Blog Posts:
 
 * https://rgielen.net/posts/2019/introducing-fxweaver-dependency-injection-support-for-javafx-and-fxml/[Introducing FxWeaver - Dependency Injection Support for JavaFX and FXML]
 * https://rgielen.net/posts/2019/creating-a-spring-boot-javafx-application-with-fxweaver/[Creating a Spring Boot JavaFX Application with FxWeaver]
@@ -24,7 +24,29 @@ Features:
 
 === Getting Started
 
-Add ```javafx-weaver-core``` as a dependency to your project.
+==== Spring Boot
+
+Add the https://github.com/rgielen/javafx-weaver/tree/master/samples/springboot-sample#spring-boot-starter[Spring Boot Starter] dependency to your project and you are all set:
+
+with Maven:
+[source,xml]
+----
+<dependency>
+    <groupId>net.rgielen</groupId>
+    <artifactId>javafx-weaver-spring-boot-starter</artifactId>
+    <version>1.3.0</version>
+</dependency>
+----
+
+with Gradle:
+[source,groovy]
+----
+implementation 'javafx-weaver-spring-boot-starter:1.3.0'
+----
+
+==== Manual Setup
+
+Add ```javafx-weaver-core``` or ```javafx-weaver-spring```as a dependency to your project.
 
 with Maven:
 [source,xml]
@@ -42,11 +64,9 @@ with Gradle:
 implementation 'javafx-weaver-spring-boot-starter:1.3.0'
 ----
 
-Dedicated Spring and Spring Boot support is also available, including a https://github.com/rgielen/javafx-weaver/tree/master/samples/springboot-sample#spring-boot-starter[Spring Boot Starter].
-
 === Using FxWeaver
 
-For now, refer to the JavaDocs and the https://github.com/rgielen/javafx-weaver/tree/master/samples/springboot-sample[Spring Boot FxWeaver Sample Project].
+For now, refer to the JavaDocs and the https://github.com/rgielen/javafx-weaver/tree/master/samples/springboot-sample[Spring Boot based FxWeaver Sample and Feature Demo Project].
 
 More documentation to come.
 
