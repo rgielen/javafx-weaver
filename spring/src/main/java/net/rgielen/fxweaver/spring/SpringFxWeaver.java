@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class SpringFxWeaver extends FxWeaver {
 
     @Autowired
-	public SpringFxWeaver(ConfigurableApplicationContext context) {
+    public SpringFxWeaver(ConfigurableApplicationContext context) {
         super(context::getBean, context::close);
     }
 
