@@ -402,6 +402,35 @@ public class FxWeaver {
     }
 
     /**
+     * Load custom control instance,  potentially weaved with a FXML view declaring the given class.
+     * <p/>
+     * The possible FXML resource is inferred from a {@link FxmlView} annotation at the control class or the simple
+     * classname and package of said class if it was not annotated like this. If the FXML file is resolvable, the
+     * defined control within will be loaded by {@link FXMLLoader} and the controller is the same instance,
+     * using the bean factory from {@link #FxWeaver(Callback, Runnable)}. If the bean factory
+     * is based on a dependency management framework such as Spring, Guice or CDI, this means that the instance will be
+     * fully managed and injected as declared.
+     * @param controlClass
+     * @param <C>
+     * @return
+     */
+    public <C> C loadCustomControl(Class<C> controlClass) {
+        String fxmlLocation = buildFxmlReference(controlClass);
+        URL url = controlClass.getResource(fxmlLocation);
+        try (InputStream fxmlStream = url.openStream()) {
+            LOG.debug("Loading FXML resource at {}", url);
+            FXMLLoader loader = new FXMLLoader();
+            C bean = controlClass.cast(beanFactory.call(controlClass));
+            loader.setRoot(bean);
+            loader.setController(bean);
+            loader.load(fxmlStream);
+            return bean;
+        } catch (IOException e) {
+            throw new FxLoadException("Unable to load FXML file " + url, e);
+        }
+    }
+
+    /**
      * Build a FXML view location reference for controller classes, based on {@link FxmlView} annotation or simple
      * classname.
      *
