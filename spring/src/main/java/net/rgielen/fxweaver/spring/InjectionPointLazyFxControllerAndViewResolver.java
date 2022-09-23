@@ -8,6 +8,7 @@ import org.springframework.beans.factory.InjectionPoint;
 import org.springframework.core.ResolvableType;
 
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 /**
  * This class helps to create a generic {@link FxControllerAndView} bean factory that can be used for direct injection
@@ -48,10 +49,17 @@ import java.util.Optional;
  */
 public class InjectionPointLazyFxControllerAndViewResolver {
 
-    private final FxWeaver fxWeaver;
+    protected final FxWeaver fxWeaver;
+
+    protected final ResourceBundle resourceBundle;
+
+    public InjectionPointLazyFxControllerAndViewResolver(FxWeaver fxWeaver, ResourceBundle resourceBundle) {
+        this.fxWeaver = fxWeaver;
+        this.resourceBundle = resourceBundle;
+    }
 
     public InjectionPointLazyFxControllerAndViewResolver(FxWeaver fxWeaver) {
-        this.fxWeaver = fxWeaver;
+        this(fxWeaver, null);
     }
 
     /**
@@ -69,14 +77,14 @@ public class InjectionPointLazyFxControllerAndViewResolver {
         }
         try {
             Class<C> controllerClass = (Class<C>) resolvableType.getGenerics()[0].resolve();
-            return new LazyFxControllerAndView<>(() -> fxWeaver.load(controllerClass));
+            return resourceBundle == null ? new LazyFxControllerAndView<>(() -> fxWeaver.load(controllerClass)) : new LazyFxControllerAndView<>(() -> fxWeaver.load(controllerClass, resourceBundle));
         } catch (Exception e) {
             throw new IllegalArgumentException(
                     "Generic controller type not resolvable for injection point " + injectionPoint, e);
         }
     }
 
-    private ResolvableType findResolvableType(InjectionPoint injectionPoint) {
+    protected ResolvableType findResolvableType(InjectionPoint injectionPoint) {
         return Optional.ofNullable(injectionPoint.getMethodParameter())
                 .map(ResolvableType::forMethodParameter)
                 // TODO: Refactor the following to use .or() when dropping Java 8 support
