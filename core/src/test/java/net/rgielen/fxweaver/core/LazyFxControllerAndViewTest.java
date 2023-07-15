@@ -1,12 +1,16 @@
 package net.rgielen.fxweaver.core;
 
-import javafx.scene.Node;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.function.Supplier;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.Test;
+
+import javafx.scene.Node;
 
 /**
  * @author <a href="mailto:rene.gielen@gmail.com">Rene Gielen</a>

@@ -4,12 +4,6 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 
-	<!--	<parent>-->
-	<!--		<groupId>net.rgielen</groupId>-->
-	<!--		<artifactId>maven-defaults</artifactId>-->
-	<!--		<version>1.4</version>-->
-	<!--	</parent>-->
-
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>net.rgielen</groupId>
@@ -45,19 +39,22 @@
 
 	<properties>
 		<character.encoding>UTF-8</character.encoding>
-		<java.level>1.8</java.level>
+		<java.level>20</java.level>
+		<maven.compiler.target>20</maven.compiler.target>
+		<maven.compiler.source>20</maven.compiler.source>
 		<project.build.sourceEncoding>${character.encoding}</project.build.sourceEncoding>
-		<slf4j.version>1.7.28</slf4j.version>
-		<spring-framework.version>5.1.8.RELEASE</spring-framework.version>
-		<javafx.version>11.0.2</javafx.version>
-		<spring-boot.version>2.2.0.RELEASE</spring-boot.version>
+		<slf4j.version>2.0.7</slf4j.version>
+		<spring-framework.version>6.0.11</spring-framework.version>
+		<javafx.version>20.0.1</javafx.version>
+		<spring-boot.version>3.1.1</spring-boot.version>
 	</properties>
 
 	<modules>
 		<module>core</module>
 		<module>spring</module>
-		<module>samples</module>
 		<module>spring-boot</module>
+		<module>samples</module>
+
 	</modules>
 
 	<dependencyManagement>
@@ -77,6 +74,54 @@
 				<artifactId>javafx-controls</artifactId>
 				<version>${javafx.version}</version>
 			</dependency>
+
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context</artifactId>
+				<version>${spring-framework.version}</version>
+				<!--				<scope>provided</scope>-->
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-core</artifactId>
+				<version>${spring-framework.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-expression</artifactId>
+				<version>${spring-framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-beans</artifactId>
+				<version>${spring-framework.version}</version>
+			</dependency>
+
+
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter</artifactId>
+				<version>5.9.3</version>
+				<scope>test</scope>
+			</dependency>
+
+
+			<dependency>
+				<groupId>org.assertj</groupId>
+				<artifactId>assertj-core</artifactId>
+				<version>3.24.2</version>
+				<scope>test</scope>
+			</dependency>
+
+
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-core</artifactId>
+				<version>5.4.0</version>
+				<scope>test</scope>
+			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 
@@ -98,6 +143,7 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
+
 	</build>
 
 </project>

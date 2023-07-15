@@ -1,9 +1,9 @@
 package net.rgielen.fxweaver.spring;
 
-import org.junit.Test;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class SpringFxContextLoaderTest {
 
