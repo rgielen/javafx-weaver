@@ -1,48 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <artifactId>javafx-weaver-spring-boot</artifactId>
-        <groupId>net.rgielen</groupId>
-        <version>1.4.0-SNAPSHOT</version>
-    </parent>
-    <artifactId>javafx-weaver-spring-boot-autoconfigure</artifactId>
-    <name>javafx-weaver-spring-boot-autoconfigure</name>
+	<parent>
+		<artifactId>javafx-weaver-spring-boot</artifactId>
+		<groupId>net.rgielen</groupId>
+		<version>1.4.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>javafx-weaver-spring-boot-autoconfigure</artifactId>
+	<name>javafx-weaver-spring-boot-autoconfigure</name>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-autoconfigure</artifactId>
-        </dependency>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-autoconfigure</artifactId>
+		</dependency>
 
-        <dependency>
-            <groupId>net.rgielen</groupId>
-            <artifactId>javafx-weaver-spring</artifactId>
-            <version>${project.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-fxml</artifactId>
-            <optional>true</optional>
-        </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>net.rgielen</groupId>
+			<artifactId>javafx-weaver-spring</artifactId>
+			<version>${project.version}</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-fxml</artifactId>
+			<optional>true</optional>
+		</dependency>
+	</dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifestEntries>
-                            <Automatic-Module-Name>net.rgielen.fxweaver.spring.boot.autoconfigure</Automatic-Module-Name>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<Automatic-Module-Name>
+								net.rgielen.fxweaver.spring.boot.autoconfigure</Automatic-Module-Name>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

@@ -1,97 +1,103 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <groupId>net.rgielen</groupId>
-        <artifactId>maven-defaults</artifactId>
-        <version>1.4</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <artifactId>javafx-weaver</artifactId>
-    <packaging>pom</packaging>
-    <version>1.4.0-SNAPSHOT</version>
 
-    <name>javafx-weaver</name>
-    <description>
-        An opinionated view on how to add dependency injection to JavaFX
-    </description>
-    <url>https://github.com/rgielen/javafx-weaver</url>
-    <licenses>
-        <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-    <developers>
-        <developer>
-            <name>René Gielen</name>
-            <url>https://github.com/rgielen</url>
-        </developer>
-    </developers>
+	<!--	<parent>-->
+	<!--		<groupId>net.rgielen</groupId>-->
+	<!--		<artifactId>maven-defaults</artifactId>-->
+	<!--		<version>1.4</version>-->
+	<!--	</parent>-->
 
-    <scm>
-        <url>https://github.com/rgielen/javafx-weaver</url>
-        <connection>scm:git:git@github.com:rgielen/javafx-weaver.git</connection>
-        <developerConnection>scm:git:git@github.com:rgielen/javafx-weaver.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+	<modelVersion>4.0.0</modelVersion>
 
-    <properties>
-        <character.encoding>UTF-8</character.encoding>
-        <java.level>1.8</java.level>
-        <project.build.sourceEncoding>${character.encoding}</project.build.sourceEncoding>
-        <slf4j.version>1.7.28</slf4j.version>
-        <spring-framework.version>5.1.8.RELEASE</spring-framework.version>
-        <javafx.version>11.0.2</javafx.version>
-        <spring-boot.version>2.2.0.RELEASE</spring-boot.version>
-    </properties>
+	<groupId>net.rgielen</groupId>
+	<artifactId>javafx-weaver</artifactId>
+	<packaging>pom</packaging>
+	<version>2.0.0-SNAPSHOT</version>
 
-    <modules>
-        <module>core</module>
-        <module>spring</module>
-        <module>samples</module>
-        <module>spring-boot</module>
-    </modules>
+	<name>javafx-weaver</name>
+	<description>
+		An opinionated view on how to add dependency injection to JavaFX
+	</description>
+	<url>https://github.com/aroonj/javafx-weaver</url>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>Aroon Janthong</name>
+			<url>https://github.com/aroonj</url>
+		</developer>
+	</developers>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-fxml</artifactId>
-                <version>${javafx.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-controls</artifactId>
-                <version>${javafx.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+	<scm>
+		<url>https://github.com/aroonj/javafx-weaver</url>
+		<connection>scm:git:git@github.com:aroonj/javafx-weaver.git</connection>
+		<developerConnection>scm:git:git@github.com:aroonj/javafx-weaver.git</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
 
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <configuration>
-                        <encoding>${project.build.sourceEncoding}</encoding>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <configuration>
-                        <source>${java.level}</source>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
-    
+	<properties>
+		<character.encoding>UTF-8</character.encoding>
+		<java.level>1.8</java.level>
+		<project.build.sourceEncoding>${character.encoding}</project.build.sourceEncoding>
+		<slf4j.version>1.7.28</slf4j.version>
+		<spring-framework.version>5.1.8.RELEASE</spring-framework.version>
+		<javafx.version>11.0.2</javafx.version>
+		<spring-boot.version>2.2.0.RELEASE</spring-boot.version>
+	</properties>
+
+	<modules>
+		<module>core</module>
+		<module>spring</module>
+		<module>samples</module>
+		<module>spring-boot</module>
+	</modules>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.openjfx</groupId>
+				<artifactId>javafx-fxml</artifactId>
+				<version>${javafx.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.openjfx</groupId>
+				<artifactId>javafx-controls</artifactId>
+				<version>${javafx.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<encoding>${project.build.sourceEncoding}</encoding>
+					</configuration>
+				</plugin>
+				<plugin>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<configuration>
+						<source>${java.level}</source>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
 </project>

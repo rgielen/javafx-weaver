@@ -9,12 +9,14 @@ import net.rgielen.fxweaver.spring.InjectionPointLazyFxControllerAndViewResolver
 import net.rgielen.fxweaver.spring.SpringFxWeaver;
 import org.springframework.beans.factory.InjectionPoint;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 
 @SpringBootApplication
+@EnableAutoConfiguration
 public class JavafxWeaverSpringbootSampleApplication {
 
     public static void main(String[] args) {
