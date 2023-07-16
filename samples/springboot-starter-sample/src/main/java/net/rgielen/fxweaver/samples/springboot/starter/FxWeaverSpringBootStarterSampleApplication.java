@@ -18,7 +18,7 @@ import net.rgielen.fxweaver.samples.springboot.starter.application.SpringbootJav
 		"net.rgielen.fxweaver.samples.springboot.starter.controller" })
 @EnableAutoConfiguration
 public class FxWeaverSpringBootStarterSampleApplication {
-//FIXME can not start app
+	
 	public static void main(String[] args) {
 		Application.launch(SpringbootJavaFxApplication.class, args);
 	}
