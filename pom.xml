@@ -41,10 +41,10 @@
         <character.encoding>UTF-8</character.encoding>
         <java.level>1.8</java.level>
         <project.build.sourceEncoding>${character.encoding}</project.build.sourceEncoding>
-        <slf4j.version>1.7.28</slf4j.version>
-        <spring-framework.version>5.1.8.RELEASE</spring-framework.version>
+        <slf4j.version>1.7.36</slf4j.version>
+        <spring-framework.version>5.3.31</spring-framework.version>
         <javafx.version>11.0.2</javafx.version>
-        <spring-boot.version>2.2.0.RELEASE</spring-boot.version>
+        <spring-boot.version>2.7.18</spring-boot.version>
     </properties>
 
     <modules>
