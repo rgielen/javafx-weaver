@@ -9,7 +9,7 @@
 
     <artifactId>javafx-weaver</artifactId>
     <packaging>pom</packaging>
-    <version>1.4.0-SNAPSHOT</version>
+    <version>2.0.0-SNAPSHOT</version>
 
     <name>javafx-weaver</name>
     <description>
@@ -39,12 +39,14 @@
 
     <properties>
         <character.encoding>UTF-8</character.encoding>
-        <java.level>1.8</java.level>
+        <java.level>11</java.level>
         <project.build.sourceEncoding>${character.encoding}</project.build.sourceEncoding>
-        <slf4j.version>1.7.36</slf4j.version>
+        <slf4j.version>2.0.10</slf4j.version>
         <spring-framework.version>5.3.31</spring-framework.version>
-        <javafx.version>11.0.2</javafx.version>
+        <javafx.version>17.0.8</javafx.version>
         <spring-boot.version>2.7.18</spring-boot.version>
+        <assertj-core.version>3.21.0</assertj-core.version>
+        <mockito.version>4.2.0</mockito.version>
     </properties>
 
     <modules>
@@ -71,6 +73,26 @@
                 <artifactId>javafx-controls</artifactId>
                 <version>${javafx.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>5.10.2</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj-core.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito.version}</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -80,6 +102,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.11.0</version>
                     <configuration>
                         <encoding>${project.build.sourceEncoding}</encoding>
                     </configuration>
