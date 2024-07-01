@@ -41,12 +41,15 @@
         <character.encoding>UTF-8</character.encoding>
         <java.level>11</java.level>
         <project.build.sourceEncoding>${character.encoding}</project.build.sourceEncoding>
-        <slf4j.version>2.0.10</slf4j.version>
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+        <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
+        <maven-javadoc-plugin.version>3.7.0</maven-javadoc-plugin.version>
+        <slf4j.version>2.0.13</slf4j.version>
         <spring-framework.version>5.3.31</spring-framework.version>
-        <javafx.version>17.0.8</javafx.version>
+        <javafx.version>17.0.11</javafx.version>
         <spring-boot.version>2.7.18</spring-boot.version>
-        <assertj-core.version>3.21.0</assertj-core.version>
-        <mockito.version>4.2.0</mockito.version>
+        <assertj-core.version>3.26.0</assertj-core.version>
+        <mockito.version>4.11.0</mockito.version>
     </properties>
 
     <modules>
@@ -102,21 +105,21 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.11.0</version>
+                    <version>${maven-compiler-plugin.version}</version>
                     <configuration>
                         <encoding>${project.build.sourceEncoding}</encoding>
                     </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.6.3</version>
+                    <version>${maven-javadoc-plugin.version}</version>
                     <configuration>
                         <source>${java.level}</source>
                     </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.3.0</version>
+                    <version>${maven-jar-plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
