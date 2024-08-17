@@ -1,14 +1,12 @@
 package net.rgielen.fxweaver.samples.springboot.starter.controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import net.rgielen.fxweaver.core.FxControllerAndView;
-import net.rgielen.fxweaver.core.FxWeaver;
 import net.rgielen.fxweaver.core.FxmlView;
-import org.springframework.beans.factory.InjectionPoint;
 import org.springframework.stereotype.Component;
 
 
@@ -31,12 +29,14 @@ public class SomeDialog {
 
     @FXML
     public void initialize() {
-        this.stage = new Stage();
-        stage.setScene(new Scene(dialog));
+        Platform.runLater(() -> {
+            this.stage = new Stage();
+            stage.setScene(new Scene(dialog));
 
-        closeButton.setOnAction(
+            closeButton.setOnAction(
                 actionEvent -> stage.close()
-        );
+            );
+        });
     }
 
     public void show() {
