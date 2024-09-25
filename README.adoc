@@ -1,4 +1,4 @@
-image:https://maven-badges.herokuapp.com/maven-central/net.rgielen/javafx-weaver/badge.svg[Maven Central,link=http://search.maven.org/#search%7Cga%7C1%7Cnet.rgielen.javafx-weaver]
+image:https://img.shields.io/maven-central/v/net.rgielen/javafx-weaver[Maven Central Version,link=https://central.sonatype.com/search?q=net.rgielen.javafx-weaver]
 
 == JavaFX-Weaver
 
