@@ -1,14 +1,19 @@
 package net.rgielen.fxweaver.samples.springboot;
 
-import javafx.application.Application;
+import com.sun.javafx.stage.StageHelper;
+import javafx.application.Platform;
 import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import net.rgielen.fxweaver.core.FxControllerAndView;
 import net.rgielen.fxweaver.core.FxWeaver;
-import net.rgielen.fxweaver.samples.springboot.application.SpringbootJavaFxApplication;
+import net.rgielen.fxweaver.samples.springboot.controller.MainController;
 import net.rgielen.fxweaver.spring.InjectionPointLazyFxControllerAndViewResolver;
 import net.rgielen.fxweaver.spring.SpringFxWeaver;
 import org.springframework.beans.factory.InjectionPoint;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -18,14 +23,25 @@ import org.springframework.context.annotation.Scope;
 public class JavafxWeaverSpringbootSampleApplication {
 
     public static void main(String[] args) {
-        Application.launch(SpringbootJavaFxApplication.class, args);
+        Platform.startup(() -> {
+            SpringApplication.run(JavafxWeaverSpringbootSampleApplication.class, args);
+        });
     }
 
     @Bean
     public FxWeaver fxWeaver(ConfigurableApplicationContext applicationContext) {
-        // Would also work with javafx-weaver-core only:
-        // return new FxWeaver(applicationContext::getBean, applicationContext::close);
         return new SpringFxWeaver(applicationContext);
+    }
+
+    @Bean
+    CommandLineRunner commandLineRunner(FxWeaver fxWeaver) {
+        return args -> {
+            Stage stage = new Stage();
+            StageHelper.setPrimary(stage, true);
+            Scene scene = new Scene(fxWeaver.loadView(MainController.class), 400, 300);
+            stage.setScene(scene);
+            stage.show();
+        };
     }
 
     /**
