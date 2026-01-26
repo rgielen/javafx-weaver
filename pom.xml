@@ -51,7 +51,7 @@
         <spring-framework.version>5.3.39</spring-framework.version>
         <javafx.version>17.0.11</javafx.version>
         <spring-boot.version>2.7.18</spring-boot.version>
-        <assertj-core.version>3.26.0</assertj-core.version>
+        <assertj-core.version>3.27.7</assertj-core.version>
         <mockito.version>4.11.0</mockito.version>
     </properties>
 
